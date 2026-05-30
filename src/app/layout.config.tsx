@@ -3,7 +3,12 @@ import { Logo } from '@/components/logo';
 
 export const baseOptions: BaseLayoutProps = {
   nav: {
-    title: <Logo />,
+    title: (
+      <span className="flex items-center gap-2">
+        <Logo />
+        <span className="font-semibold">по-русски</span>
+      </span>
+    ),
   },
   links: [
     {
