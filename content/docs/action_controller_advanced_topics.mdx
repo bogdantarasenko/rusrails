@@ -1,0 +1,503 @@
+---
+title: Action Controller. Продвинутые темы
+description: "В этом руководстве рассматриваются продвинутые темы, связанные с контроллерами Rails: защита от CSRF, ограничение поддерживаемых браузеров, HTTP-аутентификация, потоковая передача данных, фильтрация логов, проверка работоспособности и обработка исключений."
+---
+
+В этом руководстве вы изучите некоторые продвинутые темы, связанные с контроллерами. После его прочтения вы будете знать, как:
+
+* Защищаться от межсайтовой подделки запросов (CSRF).
+* Использовать встроенную в Action Controller HTTP-аутентификацию.
+* Направлять потоковые данные прямо в браузер пользователя.
+* Отфильтровывать чувствительные параметры из логов приложения.
+* Обрабатывать исключения, которые могут порождаться в процессе обработки запроса.
+* Использовать встроенную конечную точку проверки работоспособности для балансировщиков нагрузки и мониторов доступности.
+
+--------------------------------------------------------------------------------
+
+## Введение
+
+Это руководство охватывает ряд продвинутых тем, связанных с контроллерами в Rails-приложении. Введение в Action Controller смотрите в руководстве [Обзор Action Controller](/docs/action-controller-overview).
+
+## Токен подлинности и защита от подделки запросов
+
+Межсайтовая подделка запроса ([CSRF](https://api.rubyonrails.org/classes/ActionController/RequestForgeryProtection.html#method-i-form_authenticity_token)) — это тип вредоносной атаки, при которой несанкционированные запросы отправляются от имени пользователя, которому доверяет веб-приложение.
+
+Первый шаг к предотвращению такой атаки — убедиться, что все «деструктивные» экшны (create, update и destroy) в вашем приложении используют не-GET запросы (такие как POST, PUT и DELETE).
+
+Однако вредоносный сайт всё ещё может отправить не-GET запрос на ваш сайт, поэтому Rails по умолчанию встраивает защиту от подделки запросов в контроллеры.
+
+Это делается путём добавления токена с помощью метода [protect_from_forgery](https://api.rubyonrails.org/classes/ActionController/RequestForgeryProtection/ClassMethods.html#method-i-protect_from_forgery). Этот токен добавляется к каждому запросу и известен только вашему серверу. Rails сверяет полученный токен с токеном в сессии. Если входящий запрос не содержит правильно совпадающего токена, сервер откажет в доступе.
+
+CSRF-токен добавляется автоматически, когда `config.action_controller.default_protect_from_forgery` установлен в `true`, что является значением по умолчанию для вновь создаваемых Rails-приложений. Его также можно задать вручную:
+
+```ruby
+class ApplicationController < ActionController::Base
+  protect_from_forgery with: :exception
+end
+```
+
+<Callout type="info">
+Все подклассы `ActionController::Base` защищены по умолчанию и будут вызывать ошибку `ActionController::InvalidCrossOriginRequest` при непроверенных запросах.
+</Callout>
+
+### Токен подлинности в формах
+
+Когда вы генерируете форму с помощью `form_with` следующим образом:
+
+```erb
+<%= form_with model: @user do |form| %>
+  <%= form.text_field :username %>
+  <%= form.text_field :password %>
+<% end %>
+```
+
+CSRF-токен с именем `authenticity_token` автоматически добавляется как скрытое поле в сгенерированный HTML:
+
+```html
+<form accept-charset="UTF-8" action="/users/1" method="post">
+<input type="hidden"
+       value="67250ab105eb5ad10851c00a5621854a23af5489"
+       name="authenticity_token"/>
+<!-- fields -->
+</form>
+```
+
+Rails добавляет этот токен в каждую `form`, сгенерированную с помощью [хелперов форм](/docs/form-helpers), поэтому в большинстве случаев вам не нужно ничего делать. Если вы пишете форму вручную или вам нужно добавить токен по другой причине, он доступен через метод [`form_authenticity_token`](https://api.rubyonrails.org/classes/ActionController/RequestForgeryProtection.html#method-i-form_authenticity_token).
+
+```html
+<!-- app/views/layouts/application.html.erb -->
+<head>
+  <meta name="csrf-token" content="<%= form_authenticity_token %>">
+</head>
+```
+
+Метод `form_authenticity_token` генерирует валидный токен аутентификации. Это может быть полезно в местах, куда Rails не добавляет его автоматически, например, в пользовательских Ajax-запросах.
+
+Более подробно об атаке CSRF, а также о мерах противодействия CSRF, можно узнать в [руководстве по безопасности](/docs/security).
+
+## Управление допустимыми версиями браузеров
+
+Начиная с версии 7.2, контроллеры Rails используют метод [`allow_browser`](https://api.rubyonrails.org/classes/ActionController/AllowBrowser/ClassMethods.html#method-i-allow_browser) в `ApplicationController`, чтобы по умолчанию разрешать только современные браузеры.
+
+```ruby
+class ApplicationController < ActionController::Base
+  # Разрешаем только современные браузеры, поддерживающие webp-изображения, web push, badges, import maps, CSS nesting и CSS :has.
+  allow_browser versions: :modern
+end
+```
+
+<Callout type="info">
+К современным браузерам относятся Safari 17.2+, Chrome 120+, Firefox 121+, Opera 106+. Вы можете использовать [caniuse.com](https://caniuse.com/) для проверки версий браузеров, поддерживающих нужные вам возможности.
+</Callout>
+
+В дополнение к значению по умолчанию `:modern`, вы также можете указать версии браузеров вручную:
+
+```ruby
+class ApplicationController < ActionController::Base
+  # Будут разрешены все версии Chrome и Opera, но ни одна версия "internet explorer" (ie). Safari должен быть 16.4+, а Firefox 121+.
+  allow_browser versions: { safari: 16.4, firefox: 121, ie: false }
+end
+```
+
+Браузеры, совпавшие в хэше, переданном в `versions:`, будут заблокированы, если их версия ниже указанной. Это означает, что все остальные браузеры, не упомянутые в `versions:` (Chrome и Opera в примере выше), а также агенты, не отправляющие заголовок user-agent, _будут_ иметь доступ.
+
+Вы также можете использовать `allow_browser` в конкретном контроллере и указывать экшны с помощью `only` или `except`. Например:
+
+```ruby
+class MessagesController < ApplicationController
+  # В дополнение к браузерам, заблокированным в ApplicationController, также блокируем Opera ниже 104 и Chrome ниже 119 для экшна show.
+  allow_browser versions: { opera: 104, chrome: 119 }, only: :show
+end
+```
+
+Заблокированному браузеру по умолчанию будет отдан файл `public/406-unsupported-browser.html` с HTTP-кодом «406 Not Acceptable».
+
+## HTTP-аутентификация
+
+Rails поставляется с тремя встроенными механизмами HTTP-аутентификации:
+
+* Basic Authentication
+* Digest Authentication
+* Token Authentication
+
+### HTTP Basic Authentication
+
+HTTP Basic Authentication — это простой метод аутентификации, при котором пользователю требуется ввести имя пользователя и пароль для доступа к сайту или определённой его части (например, к разделу администратора). Эти учётные данные вводятся в диалоговом окне HTTP basic браузера. Затем учётные данные пользователя кодируются и отправляются в HTTP-заголовке с каждым запросом.
+
+HTTP basic-аутентификация — это схема аутентификации, поддерживаемая большинством браузеров. Использование HTTP Basic-аутентификации в контроллере Rails можно реализовать с помощью метода [`http_basic_authenticate_with`][]:
+
+```ruby
+class AdminsController < ApplicationController
+  http_basic_authenticate_with name: "Arthur", password: "42424242"
+end
+```
+
+С таким объявлением вы можете создавать контроллеры, наследующиеся от `AdminsController`. Все экшны в этих контроллерах будут использовать HTTP basic-аутентификацию и требовать учётные данные пользователя.
+
+<Callout type="warn">
+HTTP Basic Authentication легко реализовать, но сама по себе она небезопасна, так как отправляет незашифрованные учётные данные по сети. Обязательно используйте HTTPS вместе с Basic-аутентификацией. Вы также можете [принудительно использовать HTTPS](#принудительное-использование-протокола-https).
+</Callout>
+
+[`http_basic_authenticate_with`]:
+    https://api.rubyonrails.org/classes/ActionController/HttpAuthentication/Basic/ControllerMethods/ClassMethods.html#method-i-http_basic_authenticate_with
+
+### HTTP Digest Authentication
+
+HTTP digest-аутентификация более безопасна, чем basic-аутентификация, так как не требует от клиента отправки незашифрованного пароля по сети. Вместо этого учётные данные хешируются, и отправляется [Digest](https://api.rubyonrails.org/classes/ActionController/HttpAuthentication/Digest.html).
+
+Использовать digest-аутентификацию в Rails можно с помощью метода [`authenticate_or_request_with_http_digest`][]:
+
+```ruby
+class AdminsController < ApplicationController
+  USERS = { "admin" => "helloworld" }
+
+  before_action :authenticate
+
+  private
+    def authenticate
+      authenticate_or_request_with_http_digest do |username|
+        USERS[username]
+      end
+    end
+end
+```
+
+Блок `authenticate_or_request_with_http_digest` принимает только один аргумент — имя пользователя. Блок возвращает пароль, если он найден. Если возвращаемое значение равно `false` или `nil`, считается, что аутентификация не удалась.
+
+[`authenticate_or_request_with_http_digest`]:
+    https://api.rubyonrails.org/classes/ActionController/HttpAuthentication/Digest/ControllerMethods.html#method-i-authenticate_or_request_with_http_digest
+
+### HTTP Token Authentication
+
+Token-аутентификация (так называемая «Bearer» аутентификация) — это метод аутентификации, при котором клиент получает уникальный токен после успешного входа в систему, который он затем включает в заголовок `Authorization` будущих запросов. Вместо отправки учётных данных с каждым запросом клиент отправляет этот [токен](https://api.rubyonrails.org/classes/ActionController/HttpAuthentication/Token.html) (строку, представляющую сессию пользователя) как «носителя» (bearer) аутентификации.
+
+Этот подход повышает безопасность, отделяя учётные данные от текущей сессии. Вы используете токен аутентификации, выданный заранее, для выполнения аутентификации.
+
+Реализовать token-аутентификацию в Rails можно с помощью метода [`authenticate_or_request_with_http_token`][].
+
+```ruby
+class PostsController < ApplicationController
+  TOKEN = "secret"
+
+  before_action :authenticate
+
+  private
+    def authenticate
+      authenticate_or_request_with_http_token do |token, options|
+        ActiveSupport::SecurityUtils.secure_compare(token, TOKEN)
+      end
+    end
+end
+```
+
+Блок `authenticate_or_request_with_http_token` принимает два аргумента — токен и хэш с опциями, разобранными из HTTP-заголовка `Authorization`. Блок должен вернуть `true`, если аутентификация прошла успешно. Возврат `false` или `nil` приведёт к ошибке аутентификации.
+
+[`authenticate_or_request_with_http_token`]:
+    https://api.rubyonrails.org/classes/ActionController/HttpAuthentication/Token/ControllerMethods.html#method-i-authenticate_or_request_with_http_token
+
+## Потоковая передача и скачивание файлов
+
+Контроллеры Rails предоставляют способ отправить пользователю файл вместо рендеринга HTML-страницы. Это можно сделать с помощью методов [`send_data`][] и [`send_file`][], которые передают данные клиенту потоком. Метод `send_file` — это удобный метод, позволяющий указать имя файла, и он будет потоково передавать его содержимое.
+
+Вот пример использования `send_data`:
+
+```ruby
+require "prawn"
+class ClientsController < ApplicationController
+  # Создаёт PDF-документ с информацией о клиенте и
+  # возвращает его. Пользователь получит PDF как скачанный файл.
+  def download_pdf
+    client = Client.find(params[:id])
+    send_data generate_pdf(client),
+              filename: "#{client.name}.pdf",
+              type: "application/pdf"
+  end
+
+  private
+    def generate_pdf(client)
+      Prawn::Document.new do
+        text client.name, align: :center
+        text "Address: #{client.address}"
+        text "Email: #{client.email}"
+      end.render
+    end
+end
+```
+
+Экшн `download_pdf` в примере выше вызывает приватный метод, который генерирует PDF-документ и возвращает его в виде строки. Эта строка затем будет передана клиенту потоком как скачиваемый файл.
+
+Иногда при потоковой передаче файлов пользователю вы можете не хотеть, чтобы их скачивали. Возьмём, например, изображения, которые могут быть встроены в HTML-страницы. Чтобы сказать браузеру, что файл не предназначен для скачивания, можно задать опции `:disposition` значение `"inline"`. Значение по умолчанию для этой опции — `"attachment"`.
+
+[`send_data`]:
+    https://api.rubyonrails.org/classes/ActionController/DataStreaming.html#method-i-send_data
+[`send_file`]:
+    https://api.rubyonrails.org/classes/ActionController/DataStreaming.html#method-i-send_file
+
+### Отправка файлов
+
+Если вы хотите отправить файл, который уже существует на диске, используйте метод `send_file`.
+
+```ruby
+class ClientsController < ApplicationController
+  # Передаёт потоком файл, который уже был сгенерирован и сохранён на диске.
+  def download_pdf
+    client = Client.find(params[:id])
+    send_file("#{Rails.root}/files/clients/#{client.id}.pdf",
+              filename: "#{client.name}.pdf",
+              type: "application/pdf")
+  end
+end
+```
+
+Файл будет читаться и передаваться потоком по 4 КБ за раз по умолчанию, чтобы не загружать весь файл в память сразу. Вы можете отключить потоковую передачу опцией `:stream` или изменить размер блока опцией `:buffer_size`.
+
+Если `:type` не указан, он будет угадан по расширению файла, указанному в `:filename`. Если для расширения не зарегистрирован content-type, будет использован `application/octet-stream`.
+
+<Callout type="warn">
+Будьте осторожны при использовании данных, поступающих от клиента (params, cookies и т. п.), для определения файла на диске. Это представляет угрозу безопасности, так как может позволить кому-то получить доступ к конфиденциальным файлам.
+</Callout>
+
+<Callout type="info">
+Не рекомендуется передавать статические файлы через Rails, если вы можете вместо этого держать их в публичной папке вашего веб-сервера. Гораздо эффективнее позволить пользователю скачивать файл напрямую через Apache или другой веб-сервер, чтобы запрос не проходил без необходимости через весь стек Rails.
+</Callout>
+
+### RESTful-скачивания
+
+Хотя `send_data` работает прекрасно, при создании RESTful-приложения наличие отдельных экшнов для скачивания файлов обычно не нужно. В терминологии REST PDF-файл из примера выше можно считать просто другим представлением ресурса клиента. Rails предоставляет удобный способ для «RESTful»-скачиваний. Вот как можно переписать пример так, чтобы скачивание PDF стало частью экшна `show`, без какого-либо стриминга:
+
+```ruby
+class ClientsController < ApplicationController
+  # Пользователь может запросить этот ресурс как HTML или PDF.
+  def show
+    @client = Client.find(params[:id])
+
+    respond_to do |format|
+      format.html
+      format.pdf { render pdf: generate_pdf(@client) }
+    end
+  end
+end
+```
+
+Теперь пользователь может запросить PDF-версию клиента, просто добавив «.pdf» к URL:
+
+```
+GET /clients/1.pdf
+```
+
+Вы можете вызвать любой метод на `format`, который является расширением, зарегистрированным как MIME-тип в Rails. Rails уже регистрирует распространённые MIME-типы, такие как `"text/html"` и `"application/pdf"`:
+
+```ruby
+Mime::Type.lookup_by_extension(:pdf)
+# => "application/pdf"
+```
+
+Если вам нужны дополнительные MIME-типы, вызовите [`Mime::Type.register`](https://api.rubyonrails.org/classes/Mime/Type.html#method-c-register) в файле `config/initializers/mime_types.rb`. Например, вот как можно зарегистрировать Rich Text Format (RTF):
+
+```ruby
+Mime::Type.register("application/rtf", :rtf)
+```
+
+<Callout type="info">
+Если вы изменяете файл инициализатора, нужно перезапустить сервер, чтобы изменения вступили в силу.
+</Callout>
+
+### Live-стриминг произвольных данных
+
+Rails позволяет передавать потоком не только файлы. На самом деле в объекте response вы можете передать всё, что угодно. Модуль [`ActionController::Live`](https://api.rubyonrails.org/classes/ActionController/Live.html) позволяет создавать постоянное соединение с браузером. Подключив этот модуль в своём контроллере, можно отправлять произвольные данные в браузер в определённые моменты времени.
+
+```ruby
+class MyController < ActionController::Base
+  include ActionController::Live
+
+  def stream
+    response.headers["Content-Type"] = "text/event-stream"
+    100.times {
+      response.stream.write "hello world\n"
+      sleep 1
+    }
+  ensure
+    response.stream.close
+  end
+end
+```
+
+В примере выше будет поддерживаться постоянное соединение с браузером и отправляться 100 сообщений `"hello world\n"`, по одному в секунду.
+
+Обратите внимание, что нужно обязательно закрыть поток ответа, иначе он оставит сокет открытым на неопределённое время. Также необходимо установить content type равным `text/event-stream` *перед* вызовом `write` на потоке ответа. Заголовки нельзя записать после того, как ответ был зафиксирован (когда `response.committed?` возвращает истинное значение) с помощью `write` или `commit`.
+
+#### Пример использования
+
+Допустим, вы делаете караоке-машину, и пользователь хочет получить текст определённой песни. Каждая `Song` имеет определённое количество строк, и каждая строка занимает время `num_beats` для допевания.
+
+Если бы мы хотели возвращать слова песни в формате караоке (отправляя следующую строку только когда исполнитель допел предыдущую), мы могли бы использовать `ActionController::Live` следующим образом:
+
+```ruby
+class LyricsController < ActionController::Base
+  include ActionController::Live
+
+  def show
+    response.headers["Content-Type"] = "text/event-stream"
+    response.headers["Cache-Control"] = "no-cache"
+
+    song = Song.find(params[:id])
+
+    song.each do |line|
+      response.stream.write line.lyrics
+      sleep line.num_beats
+    end
+  ensure
+    response.stream.close
+  end
+end
+```
+
+#### Особенности стриминга
+
+Потоковая передача произвольных данных — чрезвычайно мощный инструмент. Как показано в предыдущих примерах, вы можете выбирать, когда и что отправлять через поток ответа. Однако также стоит учитывать следующее:
+
+* Каждый поток ответа создаёт новый тред и копирует thread local переменные из исходного треда. Слишком большое количество thread local переменных может негативно сказаться на производительности. Аналогично, большое количество тредов также может ухудшить производительность.
+* Если не закрыть поток ответа, соответствующий сокет останется открытым навсегда. Обязательно вызывайте `close` всякий раз, когда используете поток ответа.
+* WEBrick-серверы буферизуют все ответы, поэтому стриминг с `ActionController::Live` работать не будет. Необходимо использовать веб-сервер, который не буферизует ответы автоматически.
+
+## Фильтрация логов
+
+Rails ведёт лог-файл для каждой среды в папке `log` в корневой директории приложения. Лог-файлы крайне полезны при отладке вашего приложения, но в production-окружении вы можете не хотеть, чтобы вся информация хранилась в лог-файлах. Rails позволяет указать параметры, которые не должны сохраняться.
+
+### Фильтрация параметров
+
+Вы можете отфильтровать чувствительные параметры запроса из ваших лог-файлов, добавив их в [`config.filter_parameters`][] в конфигурации приложения.
+
+```ruby
+config.filter_parameters << :password
+```
+
+Эти параметры будут помечены как `[FILTERED]` в логе.
+
+Параметры, указанные в `filter_parameters`, будут отфильтрованы с помощью регулярного выражения с частичным совпадением. Так, например, `:passw` отфильтрует `password`, `password_confirmation` и т. д.
+
+Rails добавляет список фильтров по умолчанию, включая `:passw`, `:secret` и `:token`, в соответствующем инициализаторе (`initializers/filter_parameter_logging.rb`) для обработки типичных параметров приложения, таких как `password`, `password_confirmation` и `my_token`.
+
+[`config.filter_parameters`]: /docs/configuring#config-filter-parameters
+
+### Фильтрация редиректов
+
+Иногда желательно отфильтровать конфиденциальные адреса, на которые ваше приложение перенаправляет. Это можно сделать с помощью опции конфигурации `config.filter_redirect`:
+
+```ruby
+config.filter_redirect << "s3.amazonaws.com"
+```
+
+Вы можете установить это значение в String, Regexp или массив того и другого.
+
+```ruby
+config.filter_redirect.concat ["s3.amazonaws.com", /private_path/]
+```
+
+Соответствующие URL будут заменены на `[FILTERED]`. Однако, если вы хотите отфильтровать только параметры, а не URL целиком, можно использовать фильтрацию параметров.
+
+## Принудительное использование протокола HTTPS
+
+Если вы хотите гарантировать, что связь с вашим контроллером возможна только через HTTPS, можно сделать это, включив middleware [`ActionDispatch::SSL`][] через [`config.force_ssl`][] в конфигурации вашей среды.
+
+[`config.force_ssl`]: /docs/configuring#config-force-ssl
+[`ActionDispatch::SSL`]:
+    https://api.rubyonrails.org/classes/ActionDispatch/SSL.html
+
+## Встроенная конечная точка проверки работоспособности
+
+Rails поставляется со встроенной конечной точкой проверки работоспособности, доступной по пути `/up`. Эта конечная точка возвращает HTTP-код 200, если приложение загрузилось без исключений, и 500 — в противном случае.
+
+В production многим приложениям требуется сообщать о своём статусе — будь то монитору доступности, который вызовет инженера при возникновении проблем, или балансировщику нагрузки, или контроллеру Kubernetes, используемому для определения работоспособности конкретного инстанса. Эта проверка работоспособности разработана как универсальное решение, подходящее для большинства ситуаций.
+
+Хотя любые вновь сгенерированные Rails-приложения будут иметь проверку работоспособности по адресу `/up`, вы можете настроить путь на любой по вашему усмотрению в `config/routes.rb`:
+
+```ruby
+Rails.application.routes.draw do
+  get "health" => "rails/health#show", as: :rails_health_check
+end
+```
+
+Теперь проверка работоспособности будет доступна через `GET`- или `HEAD`-запросы к пути `/health`.
+
+<Callout type="info">
+Эта конечная точка не отражает статус всех зависимостей вашего приложения, таких как база данных или redis. Замените `"rails/health#show"` на свой собственный экшн контроллера, если у вас есть специфические для приложения нужды.
+</Callout>
+
+Отчётность о работоспособности приложения требует некоторых соображений. Вам нужно решить, что включать в проверку. Например, если сторонний сервис недоступен и ваше приложение сообщает, что оно неисправно из-за этой зависимости, ваше приложение может быть перезапущено без необходимости. В идеале ваше приложение должно изящно обрабатывать сбои сторонних сервисов.
+
+## Обработка ошибок
+
+Ваше приложение, скорее всего, будет содержать баги и выбрасывать исключения, которые нужно обрабатывать. Например, если пользователь перейдёт по ссылке на ресурс, который больше не существует в базе данных, Active Record выбросит исключение `ActiveRecord::RecordNotFound`.
+
+Обработка исключений в Rails по умолчанию отображает сообщение «500 Server Error» для всех исключений. Если запрос был сделан в development, отображается красивый бэктрейс и дополнительная информация, помогающие понять, что пошло не так. Если запрос был сделан в production, Rails отобразит простое сообщение «500 Server Error», или «404 Not Found», если произошла ошибка маршрутизации или запись не была найдена.
+
+Вы можете настроить, как эти ошибки перехватываются и как отображаются пользователю. Существует несколько уровней обработки исключений, доступных в Rails-приложении. Вы можете использовать конфигурацию `config.action_dispatch.show_exceptions`, чтобы управлять тем, как Rails обрабатывает исключения, возникающие при ответе на запросы. Подробнее об уровнях исключений можно узнать в руководстве по [конфигурированию](/docs/configuring#config-action-dispatch-show-exceptions).
+
+### Шаблоны ошибок по умолчанию
+
+По умолчанию в production-окружении приложение будет рендерить страницу ошибки. Эти страницы представляют собой статические HTML-файлы в публичной папке: `404.html`, `500.html` и так далее. Вы можете изменить эти файлы, чтобы добавить дополнительную информацию и стили.
+
+<Callout type="info">
+Шаблоны ошибок — это статические HTML-файлы, поэтому в них нельзя использовать ERB, SCSS или макеты.
+</Callout>
+
+### `rescue_from`
+
+Вы можете перехватывать конкретные ошибки и обрабатывать их по-разному с помощью метода [`rescue_from`][]. Он может обрабатывать исключения определённого типа (или нескольких типов) во всём контроллере и его подклассах.
+
+Когда происходит исключение, перехваченное директивой `rescue_from`, объект исключения передаётся в обработчик.
+
+Ниже приведён пример того, как можно использовать `rescue_from` для перехвата всех ошибок `ActiveRecord::RecordNotFound` и выполнения с ними каких-либо действий:
+
+```ruby
+class ApplicationController < ActionController::Base
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+
+  private
+    def record_not_found
+      render plain: "Record Not Found", status: 404
+    end
+end
+```
+
+Обработчиком может быть метод или объект `Proc`, переданный через опцию `:with`. Также можно использовать блок напрямую вместо явного объекта `Proc`.
+
+Пример выше никак не улучшает обработку исключений по умолчанию, но он показывает, как, перехватив конкретные исключения, вы можете делать с ними всё, что захотите. Например, можно создать пользовательские классы исключений, которые будут выбрасываться, когда у пользователя нет доступа к определённому разделу вашего приложения:
+
+```ruby
+class ApplicationController < ActionController::Base
+  rescue_from User::NotAuthorized, with: :user_not_authorized
+
+  private
+    def user_not_authorized
+      flash[:error] = "У вас нет доступа к этому разделу."
+      redirect_back(fallback_location: root_path)
+    end
+end
+
+class ClientsController < ApplicationController
+  # Проверяем, что у пользователя есть права на доступ к клиентам.
+  before_action :check_authorization
+
+  def edit
+    @client = Client.find(params[:id])
+  end
+
+  private
+    # Если пользователь не авторизован, выбрасываем пользовательское исключение.
+    def check_authorization
+      raise User::NotAuthorized unless current_user.admin?
+    end
+end
+```
+
+<Callout type="warn">
+Использование `rescue_from` с `Exception` или `StandardError` приведёт к серьёзным побочным эффектам, так как помешает Rails обрабатывать исключения должным образом. Поэтому делать так не рекомендуется без веских причин.
+</Callout>
+
+<Callout type="info">
+Некоторые исключения можно перехватывать только из класса `ApplicationController`, так как они выбрасываются до того, как контроллер инициализируется и выполняется экшн.
+</Callout>
+
+[`rescue_from`]: https://api.rubyonrails.org/classes/ActiveSupport/Rescuable/ClassMethods.html#method-i-rescue_from

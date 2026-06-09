@@ -15,6 +15,7 @@
     "action-view-helpers",
     "form-helpers",
     "action-controller-overview",
+    "action_controller_advanced_topics",
     "routing",
     "active-support-core-extensions",
     "active-support-instrumentation",
