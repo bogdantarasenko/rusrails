@@ -1,0 +1,137 @@
+---
+title: Установка Ruby on Rails
+description: Это руководство проведёт вас через установку языка программирования Ruby и фреймворка Rails на вашей операционной системе.
+---
+
+Это руководство проведёт вас через установку языка программирования Ruby и фреймворка Rails на вашей операционной системе.
+
+Хотя в вашей ОС может быть предустановлен Ruby, его версия часто устаревшая, и её нельзя обновить. Использование менеджера версий, такого как [Mise](https://mise.jdx.dev/getting-started.html), позволяет устанавливать последнюю версию Ruby, использовать разные версии Ruby для разных приложений и легко обновляться на новые версии при их выходе.
+
+В качестве альтернативы можно использовать Dev Containers, чтобы запускать Rails без установки Ruby или Rails непосредственно на вашей машине. Подробности — в руководстве [Начало работы с Dev Containers](/docs/getting_started_with_devcontainer).
+
+----------------------------
+
+## Выберите свою операционную систему
+
+Следуйте инструкциям для той операционной системы, которую вы используете:
+
+* [macOS](#установка-ruby-на-macos)
+* [Ubuntu](#установка-ruby-на-ubuntu)
+* [Windows](#установка-ruby-на-windows)
+
+<Callout type="info">
+Любые команды, начинающиеся со знака доллара `$`, нужно запускать в терминале.
+</Callout>
+
+### Установка Ruby на macOS
+
+Для следования этим инструкциям вам понадобится macOS Catalina 10.15 или новее.
+
+Для macOS вам понадобятся Xcode Command Line Tools и Homebrew, чтобы установить зависимости, необходимые для компиляции Ruby.
+
+Откройте Terminal и выполните следующие команды:
+
+```bash
+# Установка Xcode Command Line Tools
+$ xcode-select --install
+
+# Установка Homebrew и зависимостей
+$ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+$ echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.zshrc
+$ source ~/.zshrc
+$ brew install openssl@3 libyaml gmp rust
+
+# Установка менеджера версий Mise
+$ curl https://mise.run | sh
+$ echo 'eval "$(~/.local/bin/mise activate)"' >> ~/.zshrc
+$ source ~/.zshrc
+
+# Установка Ruby глобально через Mise
+$ mise use -g ruby@3
+```
+
+### Установка Ruby на Ubuntu
+
+Для следования этим инструкциям вам понадобится Ubuntu Jammy 22.04 или новее.
+
+Откройте Terminal и выполните следующие команды:
+
+```bash
+# Установка зависимостей через apt
+$ sudo apt update
+$ sudo apt install build-essential rustc libssl-dev libyaml-dev zlib1g-dev libgmp-dev git
+
+# Установка менеджера версий Mise
+$ curl https://mise.run | sh
+$ echo 'eval "$(~/.local/bin/mise activate)"' >> ~/.bashrc
+$ source ~/.bashrc
+
+# Установка Ruby глобально через Mise
+$ mise use -g ruby@3
+```
+
+### Установка Ruby на Windows
+
+Windows Subsystem for Linux (WSL) даст наилучший опыт разработки на Ruby on Rails в Windows. Он запускает Ubuntu внутри Windows, что позволяет работать в окружении, близком к тому, на котором будут работать ваши серверы в продакшене.
+
+Вам понадобится Windows 11 или Windows 10 версии 2004 и выше (сборка 19041 и выше).
+
+Откройте PowerShell или Windows Command Prompt и выполните:
+
+```bash
+$ wsl --install --distribution Ubuntu-24.04
+```
+
+В процессе установки может потребоваться перезагрузка.
+
+После установки можно открыть Ubuntu из меню «Пуск». Введите имя пользователя и пароль для вашего пользователя Ubuntu, когда система запросит их.
+
+Затем выполните следующие команды:
+
+```bash
+# Установка зависимостей через apt
+$ sudo apt update
+$ sudo apt install build-essential rustc libssl-dev libyaml-dev zlib1g-dev libgmp-dev
+
+# Установка менеджера версий Mise
+$ curl https://mise.run | sh
+$ echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc
+$ source ~/.bashrc
+
+# Установка Ruby глобально через Mise
+$ mise use -g ruby@3
+```
+
+Проверка установки Ruby
+-----------------------
+
+После установки Ruby можно убедиться, что он работает, запустив:
+
+```bash
+$ ruby --version
+ruby 3.3.6
+```
+
+Установка Rails
+---------------
+
+«Gem» в Ruby — это самодостаточный пакет библиотеки или программы на Ruby. Можно использовать команду Ruby `gem`, чтобы установить последнюю версию Rails и её зависимости с [RubyGems.org](https://rubygems.org).
+
+Выполните следующую команду, чтобы установить последний Rails и сделать его доступным в терминале:
+
+```bash
+$ gem install rails
+```
+
+Чтобы убедиться, что Rails установлен корректно, запустите команду ниже — должен напечататься номер версии:
+
+```bash
+$ rails --version
+Rails 8.0.0
+```
+
+<Callout type="info">
+Если команда `rails` не найдена, попробуйте перезапустить терминал.
+</Callout>
+
+Вы готовы [приступить к работе с Rails](/docs/getting-started)!
