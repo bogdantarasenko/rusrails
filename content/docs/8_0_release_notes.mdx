@@ -1,0 +1,272 @@
+---
+title: Заметки о релизе Ruby on Rails 8.0
+description: "Ключевые новинки в Rails 8.0:"
+---
+
+Ключевые новинки в Rails 8.0:
+
+* Kamal 2.
+* Thruster.
+* Solid Cable.
+* Solid Cache.
+* Propshaft по умолчанию.
+* Генератор системы аутентификации.
+
+Эти заметки о релизе покрывают только основные изменения. Чтобы узнать о других обновлениях, различных исправлениях программных ошибок и изменениях, обратитесь к логам изменений или к [списку коммитов](https://github.com/rails/rails/commits/8-0-stable) в главном репозитории Rails на GitHub.
+
+--------------------------------------------------------------------------------
+
+## Апгрейд до Rails 8.0
+
+Прежде чем апгрейднуть существующее приложение, было бы хорошо иметь перед этим покрытие тестами. Также, до попытки обновиться до Rails 8.0, необходимо сначала произвести апгрейд до Rails 7.2 и убедиться, что приложение все еще выполняется так, как нужно. Список вещей, которые нужно выполнить для апгрейда доступен в руководстве [Апгрейд Ruby on Rails](/docs/upgrading-ruby-on-rails#upgrading-from-rails-7-2-to-rails-8-0).
+
+## Основные особенности
+
+### Kamal 2
+
+Rails теперь поставляется с предварительно настроенным [Kamal 2](https://kamal-deploy.org/) для развёртывания вашего приложения. Kamal берет свежий Linux-сервер и превращает его в сервер приложения или вспомогательный сервер с помощью всего одной команды «kamal setup».
+
+Kamal 2 также включает прокси [Kamal Proxy](https://github.com/basecamp/kamal-proxy), заменяющий универсальный Traefik, использовавшийся на старте.
+
+### Thruster
+
+Dockerfile был обновлен и теперь включает новый прокси [Thruster](https://github.com/basecamp/thruster), который располагается перед веб-сервером Puma и обеспечивает X-Sendfile-ускорение, кэширование ассетов и их сжатие.
+
+### Solid Cable
+
+[Solid Cable](https://github.com/rails/solid_cable) заменяет Redis в роли pubsub-сервера для трансляции WebSocket-сообщений от приложения клиентам, подключенным к разным процессам. По умолчанию Solid Cable сохраняет отправленные сообщения в базе данных в течение суток.
+
+### Solid Cache
+
+[Solid Cache](https://github.com/rails/solid_cache) заменяет, в частности, Redis или Memcached для хранения HTML-фрагментов кэша.
+
+### Solid Queue
+
+[Solid Queue](https://github.com/rails/solid_queue) устраняет необходимость в Redis, а также в отдельном фреймворке выполнения заданий вроде Resque, Delayed Job или Sidekiq.
+
+Для высокопроизводительных установок он построен на новом механизме `FOR UPDATE SKIP LOCKED`, впервые представленном в PostgreSQL 9.5, но теперь доступном также в MySQL 8.0 и более новых версиях. Он также работает с SQLite.
+
+### Propshaft
+
+[Propshaft](https://github.com/rails/propshaft) теперь является pipeline ассетов по умолчанию, заменяя старую систему Sprockets.
+
+### Аутентификация
+
+[Генератор системы аутентификации](https://github.com/rails/rails/pull/52328) создает основу для системы аутентификации, основанной на сессиях, поддерживающей сброс пароля и отслеживание метаданных.
+
+## Railties
+
+За подробностями обратитесь к [Changelog][railties].
+
+### Удалено
+
+*   Удален устаревший `config.read_encrypted_secrets`.
+
+*   Удален устаревший файл `rails/console/app`.
+
+*   Удален устаревший файл `rails/console/helpers`.
+
+*   Удалена устаревшая поддержка расширения консоли Rails через `Rails::ConsoleMethods`.
+
+### Устарело
+
+*   Устарело требование `"rails/console/methods"`.
+
+*   Устарело изменение `STATS_DIRECTORIES` в пользу
+    `Rails::CodeStatistics.register_directory`.
+
+*   Устарел `bin/rake stats` в пользу `bin/rails stats`.
+
+### Значимые изменения
+
+*   `Regexp.timeout` установлен в `1`s по умолчанию для повышения безопасности от атак Regexp Denial-of-Service.
+
+## Action Cable
+
+За подробностями обратитесь к [Changelog][action-cable].
+
+### Удалено
+
+### Устарело
+
+### Значимые изменения
+
+## Action Pack
+
+За подробностями обратитесь к [Changelog][action-pack].
+
+### Удалено
+
+*   Удален `Rails.application.config.action_controller.allow_deprecated_parameters_hash_equality`.
+
+### Устарело
+
+*   Устарело определение маршрутов с несколькими путями для ускорения роутинга.
+
+### Значимые изменения
+
+*   Введён более безопасный и явный метод обработки параметров [`params#expect`](https://api.rubyonrails.org/classes/ActionController/Parameters.html#method-i-expect), так что
+    `params.expect(table: [ :attr ])` заменяет `params.require(:table).permit(:attr)`.
+
+## Action View
+
+За подробностями обратитесь к [Changelog][action-view].
+
+### Удалено
+
+*   Удалена устаревшая поддержка передачи `nil` в аргумент `model:` метода `form_with`.
+
+*   Удалена устаревшая поддержка передачи содержимого в void-элементы тегов в `tag` builder.
+
+### Устарело
+
+### Значимые изменения
+
+## Action Mailer
+
+За подробностями обратитесь к [Changelog][action-mailer].
+
+### Удалено
+
+### Устарело
+
+### Значимые изменения
+
+## Active Record
+
+За подробностями обратитесь к [Changelog][active-record].
+
+### Удалено
+
+*   Удален устаревший `config.active_record.commit_transaction_on_non_local_return`.
+
+*   Удален устаревший `config.active_record.allow_deprecated_singular_associations_name`.
+
+*   Удалена устаревшая поддержка поиска адаптеров баз данных, не зарегистрированных в Active Record.
+
+*   Удалена устаревшая поддержка определения `enum` с помощью именованных аргументов.
+
+*   Удален устаревший `config.active_record.warn_on_records_fetched_greater_than`.
+
+*   Удален устаревший `config.active_record.sqlite3_deprecated_warning`.
+
+*   Удален устаревший `ActiveRecord::ConnectionAdapters::ConnectionPool#connection`.
+
+*   Удалена устаревшая поддержка передачи имени базы данных в `cache_dump_filename`.
+
+*   Удалена устаревшая поддержка установки `ENV["SCHEMA_CACHE"]`.
+
+### Устарело
+
+*   Устарела опция `retries` у `SQLite3Adapter` в пользу
+    `timeout`.
+
+### Значимые изменения
+
+*   Запуск `db:migrate` на свежей базе данных теперь сначала загружает схему, а затем запускает миграции. Последующие вызовы будут запускать только ожидающие миграции.
+    (Если вам нужно прежнее поведение — запуск миграций с нуля вместо загрузки
+    файла схемы — это можно сделать командой `db:migrate:reset`, которая
+    _удалит и пересоздаст базу данных перед запуском миграций_.)
+
+## Active Storage
+
+За подробностями обратитесь к [Changelog][active-storage].
+
+### Удалено
+
+### Устарело
+
+*    Устарел Azure-бэкенд для Active Storage.
+
+### Значимые изменения
+
+## Active Model
+
+За подробностями обратитесь к [Changelog][active-model].
+
+### Удалено
+
+### Устарело
+
+### Значимые изменения
+
+## Active Support
+
+За подробностями обратитесь к [Changelog][active-support].
+
+### Удалено
+
+*   Удален устаревший `ActiveSupport::ProxyObject`.
+
+*   Удалена устаревшая поддержка установки `attr_internal_naming_format` с префиксом `@`.
+
+*   Удалена устаревшая поддержка передачи массива строк в `ActiveSupport::Deprecation#warn`.
+
+### Устарело
+
+*   Устарел `Benchmark.ms`.
+
+*   Устарели сложение и `since` между двумя `Time` и `ActiveSupport::TimeWithZone`.
+
+### Значимые изменения
+
+## Active Job
+
+За подробностями обратитесь к [Changelog][active-job].
+
+### Удалено
+
+*   Удален устаревший `config.active_job.use_big_decimal_serializer`.
+
+### Устарело
+
+*   Устарел `enqueue_after_transaction_commit`.
+
+*   Устарел внутренний адаптер `SuckerPunch` в пользу адаптера, включенного
+    в гем `sucker_punch`.
+
+### Значимые изменения
+
+## Action Text
+
+За подробностями обратитесь к [Changelog][action-text].
+
+### Удалено
+
+### Устарело
+
+### Значимые изменения
+
+## Action Mailbox
+
+За подробностями обратитесь к [Changelog][action-mailbox].
+
+### Удалено
+
+### Устарело
+
+### Значимые изменения
+
+## Ruby on Rails Guides
+
+За подробностями обратитесь к [Changelog][guides].
+
+### Значимые изменения
+
+## Credits
+
+Взгляните [на полный список контрибьюторов Rails](https://contributors.rubyonrails.org/), на людей, которые потратили много часов, сделав Rails стабильнее и надёжнее. Спасибо им всем.
+
+[railties]:       https://github.com/rails/rails/blob/8-0-stable/railties/CHANGELOG.md
+[action-pack]:    https://github.com/rails/rails/blob/8-0-stable/actionpack/CHANGELOG.md
+[action-view]:    https://github.com/rails/rails/blob/8-0-stable/actionview/CHANGELOG.md
+[action-mailer]:  https://github.com/rails/rails/blob/8-0-stable/actionmailer/CHANGELOG.md
+[action-cable]:   https://github.com/rails/rails/blob/8-0-stable/actioncable/CHANGELOG.md
+[active-record]:  https://github.com/rails/rails/blob/8-0-stable/activerecord/CHANGELOG.md
+[active-storage]: https://github.com/rails/rails/blob/8-0-stable/activestorage/CHANGELOG.md
+[active-model]:   https://github.com/rails/rails/blob/8-0-stable/activemodel/CHANGELOG.md
+[active-support]: https://github.com/rails/rails/blob/8-0-stable/activesupport/CHANGELOG.md
+[active-job]:     https://github.com/rails/rails/blob/8-0-stable/activejob/CHANGELOG.md
+[action-text]:    https://github.com/rails/rails/blob/8-0-stable/actiontext/CHANGELOG.md
+[action-mailbox]: https://github.com/rails/rails/blob/8-0-stable/actionmailbox/CHANGELOG.md
+[guides]:         https://github.com/rails/rails/blob/8-0-stable/guides/CHANGELOG.md
