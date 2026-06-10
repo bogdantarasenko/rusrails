@@ -11,8 +11,7 @@ export default async function HomePage() {
 
   return (
     <main className="flex-1">
-      <article className="mx-auto w-full max-w-4xl px-6 py-12 prose prose-neutral dark:prose-invert">
-        <h1>{page.data.title}</h1>
+      <article className="mx-auto w-full max-w-6xl px-6 py-12">
         <MDXContent components={getMDXComponents()} />
       </article>
     </main>

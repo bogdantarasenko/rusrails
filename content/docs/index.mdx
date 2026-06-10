@@ -1,235 +1,260 @@
 ---
 title: Ruby on Rails по-русски
-description: Ruby on Rails — это веб-фреймворк с открытым кодом, от которого программисты становятся счастливыми, код — красивым, а разработка — устойчивой и быстрой.
+description: Переводы официального руководства Ruby on Rails Guides на русский язык. Актуальная версия — Rails 8.1.
 ---
 
+<Hero version="v8.1">
 Ruby on Rails — это веб-фреймворк с открытым кодом, от которого программисты становятся счастливыми, код — красивым, а разработка — устойчивой и быстрой.
 
-На этом сайте выложены переводы официального руководства по Rails. Надеемся, эти руководства позволят вам немедленно приступить к использованию Rails и помогут разобраться, что и как в нем работает.
+На этом сайте выложены переводы официального руководства по Rails. Надеемся, эти руководства позволят вам немедленно приступить к использованию Rails и помогут разобраться, что и как в нём работает.
 
 Переводы постоянно актуализируются и добавляются. Код проекта и тексты переводов открыты и размещены [на Гитхабе](https://github.com/rusrails/rusrails). Желающим помочь всегда рады! Форкайте, предлагайте изменения, вносите их, отправляйте пул-реквесты!
 
-Это перевод [Ruby on Rails Guides](http://guides.rubyonrails.org) для версии Rails 7.2. Переводы для ранних версий доступны на гитхабе:
-
-* [Rails 7.1](https://github.com/rusrails/rusrails/tree/7.1/source)
-* [Rails 7.0](https://github.com/rusrails/rusrails/tree/7.0/source)
-* [Rails 6.1](https://github.com/rusrails/rusrails/tree/6.1/source)
-* [Rails 6.0](https://github.com/rusrails/rusrails/tree/6.0/source)
-* [Прочие версии](https://github.com/rusrails/rusrails/releases)
-
-Приступим!
-
-## С чего начать?
-
-**[Rails для начинающих](/docs/getting_started)**\
-Все, что вы должны знать, чтобы установить Rails и создать свое первое приложение.
-
-
-## Модели
-
-**[Основы Active Record](/docs/active_record_basics)**\
-Это руководство поможет начать работать с моделями, сохранять в базу данных и расскажет о паттернах и библиотеке Active Record.
-
-**[Миграции Active Record](/docs/active_record_migrations)**\
-Это руководство раскрывает, как можно использовать миграции Active Record, чтобы привести свою базу данных к структурированной и организованной форме.
-
-**[Валидации Active Record](/docs/active_record_validations)**\
-Это руководство раскрывает, как можно использовать валидации Active Record.
-
-**[Колбэки Active Record](/docs/active_record_callbacks)**\
-Это руководство раскрывает, как можно использовать колбэки (методы обратного вызова) Active Record.
-
-**[Связи (ассоциации) Active Record](/docs/association_basics)**\
-Это руководство раскрывает все связи, предоставленные Active Record.
-
-**[Интерфейс запросов Active Record](/docs/active_record_querying)**\
-Это руководство раскрывает интерфейс запросов к базе данных, предоставленный Active Record.
-
-**[Основы Active Model](/docs/active_model_basics)**\
-Это руководство раскрывает использование моделей классов без Active Record.
-
-
-## Вью
-
-**[Обзор Action View](/docs/action_view_overview)**\
-Это руководство представляет введение в Action View.
-
-**[Макеты и рендеринг в Rails](/docs/layouts_and_rendering)**\
-Это руководство раскрывает основные возможности макетов Action Controller и Action View, включая рендеринг и перенаправление, использование блоков content_for и работу с частичными шаблонами.
-
-**[Хелперы Action View](/docs/action_view_helpers)**\
-Это руководство знакомит с некоторыми из многих хелперов вью.
-
-**[Хелперы форм в Action View](/docs/form_helpers)**\
-Руководство по использованию встроенных хелперов форм.
-
-
-## Контроллеры
-
-**[Обзор Action Controller](/docs/action_controller_overview)**\
-Это руководство раскрывает, как работают контроллеры, и как они вписываются в цикл запроса к вашему приложению. Оно включает сессии, фильтры, куки, потоковые данные, работу с исключениями, вызванными запросами, и другие статьи.
-
-**[Роутинг в Rails](/docs/routing)**\
-Это руководство раскрывает открытые для пользователя функции роутинга. Если хотите понять, как использовать роутинг в вашем приложении на Rails, начните отсюда.
-
-
-## Другие компоненты
-
-**[Расширения ядра Active Support](/docs/active_support_core_extensions)**\
-Это руководство документирует расширения ядра Ruby, определенные в Active Support.
-
-**[Основы Action Mailer](/docs/action_mailer_basics)**\
-Это руководство описывает, как использовать Action Mailer для отправки электронной почты.
-
-**[Основы Action Mailbox](/docs/action_mailbox_basics)**\
-Это руководство описывает, как использовать Action Mailbox для получения электронной почты.
-
-**[Обзор Action Text](/docs/action_text_overview)**\
-Это руководство описывает, как использовать Action Text для обработки содержимого обогащенного текста.
-
-**[Основы Active Job](/active_job_basics)**\
-Это руководство даст вам все, что нужно, чтобы начать создавать, ставить в очередь и запускать фоновые задания.
-
-**[Обзор Active Storage](/active_storage_overview)**\
-В этом руководстве описывается, как прикреплять файлы к моделям Active Record.
-
-**[Обзор Action Cable](/docs/action_cable_overview)**\
-Это руководство документирует, как работает Action Cable, и как использовать WebSockets для создания функционала в реальном времени.
-
-
-## Копаем глубже
-
-**[API интернационализации Rails (I18n)](/docs/i18n)**\
-Это руководство раскрывает, как добавить интернационализацию в ваше приложение. Ваше приложение будет способно переводить содержимое на разные языки, изменять правила образования множественного числа, использовать правильные форматы дат для каждой страны и так далее.
-
-**[Тестирование приложений на Rails](/docs/testing)**\
-Это достаточно полное руководство по осуществлению различных возможностей тестирования в Rails. Оно раскрывает все от “Что такое тест?” до интеграционного тестирования. Наслаждайтесь.
-
-**[Безопасность приложений на Rails](/docs/security)**\
-Это руководство описывает общие проблемы безопасности в приложениях веб, и как избежать их в Rails.
-
-**[Отчет об ошибках в приложениях Rails](/docs/error_reporting)**\
-Это руководство представляет способы управления исключениями, которые случаются в приложениях Ruby on Rails.
-
-**[Отладка приложений на Rails](/docs/debugging_rails_applications)**\
-Это руководство описывает, как отлаживать приложения на Rails. Оно раскрывает различные способы достижения этого, и как понять что произошло "за кулисами" вашего кода.
-
-**[Конфигурирование приложений на Rails](/docs/configuring)**\
-Это руководство раскрывает основные конфигурационные настройки для приложения на Rails.
-
-**[Командная строка Rails](/docs/command_line)**\
-Это руководство раскроет инструменты командной строки, предоставленные Rails.
-
-**[Asset Pipeline](/docs/asset_pipeline)**\
-Это руководство документирует конвейер ресурсов (asset pipeline)
-
-**[Работа с JavaScript в Rails](/docs/working_with_javascript_in_rails)**\
-Это руководство раскрывает встроенную в Rails функциональность Ajax/JavaScript.
-
-**[Процесс инициализации в Rails](/docs/initialization)**\
-Это руководство объясняет внутренние процессы инициализации в Rails.
-
-**[Автозагрузка и перезагрузка констант](/docs/autoloading_and_reloading_constants)**\
-Это руководство документирует, как работает автозагрузка и перезагрузка констант (режим Zeitwerk).
-
-**[Кэширование с Rails: Обзор](/docs/caching_with_rails)**\
-Это руководство является введением в ускорение вашего приложения на Rails с помощью кэширования.
-
-**[Инструментарий Active Support](/docs/active_support_instrumentation)**\
-В этом руководстве, вы научитесь использовать инструменты Active Support API для отслеживания событий внутри Rails или другого кода на Ruby.
-
-**[Использование Rails для API-приложений](/docs/api_app)**\
-Это руководство раскрывает, как эффективно использовать Rails для разработки приложения JSON API.
-
-**[Active Record для PostgreSQL](/docs/active_record_postgresql)**\
-Это руководство рассказывает о специфике использования PostgreSQL с Active Record.
-
-**[Несколько баз данных с Active Record](/docs/active_record_multiple_databases)**\
-Это руководство раскрывает использование нескольких баз данных в вашем приложении.
-
-**[Шифрование Active Record](/docs/active_record_encryption)**\
-Это руководство раскрывает шифрование информации в базе данных с использованием Active Record.
-
-
-## Расширяем Rails
-
-**[Основы создания плагинов Rails](/docs/plugins)**\
-Это руководство раскрывает, как создать плагин, расширяющий функциональность Rails.
-
-**[Rails on Rack](/docs/rails_on_rack)**\
-Это руководство раскрывает интеграцию Rails и Rack, и взаимодействие с другими компонентами Rack.
-
-**[Создание и настройка генераторов и шаблонов Rails](/docs/generators)**\
-Это руководство раскрывает процесс добавления совершенно нового генератора для вашего расширения или представления альтернативного элемента для встроенного в Rails генератора (такого как представление альтернативных тестовых заглушек для генератора скаффолда).
-
-**[Engine для начинающих](/docs/engines)**\
-Это руководство объясняет, как написать монтируемый engine.
-
-**[Треды и выполнение кода в Rails](/threading_and_code_execution)**\
-В этом руководстве описываются необходимые требования и инструменты, доступные при работе напрямую с конкурентностью в приложении Rails.
-
-
-## Вносим вклад в Ruby on Rails
-
-**[Вносим вклад в Ruby on Rails](/contributing_to_ruby_on_rails)**\
-Rails — это не 'чей-то там фреймворк'. Это руководство раскрывает многообразие способов, которыми вы можете быть вовлечены в продолжающуюся разработку Rails.
-
-**[Рекомендации по документированию API](/api_documentation_guidelines)**\
-Это руководство документирует рекомендации для документации Ruby on Rails.
-
-**[Рекомендации для руководств по Ruby on Rails](/ruby_on_rails_guides_guidelines)**\
-Это руководство документирует рекомендации для руководств по Ruby on Rails.
-
-**[Установка зависимостей для разработки](/development_dependencies_install)**\
-Это руководство раскрывает, как настроить среду для разработки ядра Ruby on Rails.
-
-**[Политика поддержки (версий)](/docs/maintenance_policy)**\
-Какие версии Ruby on Rails поддерживаются в настоящее время и когда ожидать новые версии.
-
-
-## Заметки о релизах
-
-**[Апгрейд Ruby on Rails](/docs/upgrading_ruby_on_rails)**\
-Это руководство поможет произвести апгрейд приложения до последних версий Ruby on Rails.
-
-**[Версия 7.2 - ?](/7_2_release_notes)**\
-Заметки о релизе Rails 7.2
-
-**[Версия 7.1 - Октябрь 2023](/7_1_release_notes)**\
-Заметки о релизе Rails 7.1
-
-**[Версия 7.0 - Декабрь 2021](/7_0_release_notes)**\
-Заметки о релизе Rails 7.0
-
-**[Версия 6.1 - Декабрь 2020](/6_1_release_notes)**\
-Заметки о релизе Rails 6.1
-
-**[Версия 6.0 - Август 2019](/6_0_release_notes)**\
-Заметки о релизе Rails 6.0
-
-**[Версия 5.2 - Апрель 2018](/5_2_release_notes)**\
-Заметки о релизе Rails 5.2
-
-**[Версия 5.1 - Апрель 2017](/5_1_release_notes)**\
-Заметки о релизе Rails 5.1
-
-**[Версия 5.0 - Июнь 2016](/5_0_release_notes)**\
-Заметки о релизе Rails 5.0
-
-**[Версия 4.2 - Декабрь 2014](/4_2_release_notes)**\
-Заметки о релизе Rails 4.2
-
-**[Версия 4.1 - Апрель 2014](/4_1_release_notes)**\
-Заметки о релизе Rails 4.1
-
-**[Версия 4.0 - Июнь 2013](/4_0_release_notes)**\
-Заметки о релизе Rails 4.0
-
-**[Версия 3.2 - Январь 2012](/3_2_release_notes)**\
-Заметки о релизе Rails 3.2
-
-**[Версия 3.1 - Август 2011](/3_1_release_notes)**\
-Заметки о релизе Rails 3.1
-
-**[Версия 3.0 - Август 2010](/3_0_release_notes)**\
-Заметки о релизе Rails 3.0
+Это перевод [Ruby on Rails Guides](https://guides.rubyonrails.org) для версии Rails 8.1. Переводы для ранних версий доступны на Гитхабе: [Rails 7.1](https://github.com/rusrails/rusrails/tree/7.1/source), [7.0](https://github.com/rusrails/rusrails/tree/7.0/source), [6.1](https://github.com/rusrails/rusrails/tree/6.1/source), [6.0](https://github.com/rusrails/rusrails/tree/6.0/source), [прочие версии](https://github.com/rusrails/rusrails/releases).
+</Hero>
+
+<HomeSection title="С чего начать">
+  <GuideCard title="Установка Ruby on Rails" href="/docs/install_ruby_on_rails">
+    Как установить Ruby и Rails на вашу операционную систему.
+  </GuideCard>
+  <GuideCard title="Rails для начинающих" href="/docs/getting_started">
+    Всё, что вы должны знать, чтобы установить Rails и создать своё первое приложение.
+  </GuideCard>
+</HomeSection>
+
+<HomeSection title="Модели">
+  <GuideCard title="Основы Active Record" href="/docs/active_record_basics">
+    Это руководство поможет начать работать с моделями, сохранять в базу данных и расскажет о паттернах и библиотеке Active Record.
+  </GuideCard>
+  <GuideCard title="Миграции Active Record" href="/docs/active_record_migrations">
+    Как использовать миграции Active Record, чтобы привести свою базу данных к структурированной и организованной форме.
+  </GuideCard>
+  <GuideCard title="Валидации Active Record" href="/docs/active_record_validations">
+    Как использовать валидации Active Record.
+  </GuideCard>
+  <GuideCard title="Колбэки Active Record" href="/docs/active_record_callbacks">
+    Как использовать колбэки (методы обратного вызова) Active Record.
+  </GuideCard>
+  <GuideCard title="Связи (ассоциации) Active Record" href="/docs/association_basics">
+    Все связи, предоставленные Active Record.
+  </GuideCard>
+  <GuideCard title="Интерфейс запросов Active Record" href="/docs/active_record_querying">
+    Интерфейс запросов к базе данных, предоставленный Active Record.
+  </GuideCard>
+  <GuideCard title="Основы Active Model" href="/docs/active_model_basics">
+    Использование моделей классов без Active Record.
+  </GuideCard>
+</HomeSection>
+
+<HomeSection title="Вью">
+  <GuideCard title="Обзор Action View" href="/docs/action_view_overview">
+    Введение в Action View.
+  </GuideCard>
+  <GuideCard title="Макеты и рендеринг в Rails" href="/docs/layouts_and_rendering">
+    Основные возможности макетов Action Controller и Action View, включая рендеринг и перенаправление, content_for и частичные шаблоны.
+  </GuideCard>
+  <GuideCard title="Хелперы Action View" href="/docs/action_view_helpers">
+    Знакомство с некоторыми из многих хелперов вью.
+  </GuideCard>
+  <GuideCard title="Хелперы форм в Action View" href="/docs/form_helpers">
+    Руководство по использованию встроенных хелперов форм.
+  </GuideCard>
+</HomeSection>
+
+<HomeSection title="Контроллеры">
+  <GuideCard title="Обзор Action Controller" href="/docs/action_controller_overview">
+    Как работают контроллеры и как они вписываются в цикл запроса. Сессии, фильтры, куки, потоковые данные, исключения.
+  </GuideCard>
+  <GuideCard title="Action Controller: продвинутые темы" href="/docs/action_controller_advanced_topics">
+    Продвинутые возможности Action Controller.
+  </GuideCard>
+  <GuideCard title="Роутинг в Rails" href="/docs/routing">
+    Открытые для пользователя функции роутинга. Если хотите понять, как использовать роутинг в вашем приложении на Rails, начните отсюда.
+  </GuideCard>
+</HomeSection>
+
+<HomeSection title="Другие компоненты">
+  <GuideCard title="Расширения ядра Active Support" href="/docs/active_support_core_extensions">
+    Документирует расширения ядра Ruby, определённые в Active Support.
+  </GuideCard>
+  <GuideCard title="Основы Action Mailer" href="/docs/action_mailer_basics">
+    Как использовать Action Mailer для отправки электронной почты.
+  </GuideCard>
+  <GuideCard title="Основы Action Mailbox" href="/docs/action_mailbox_basics">
+    Как использовать Action Mailbox для получения электронной почты.
+  </GuideCard>
+  <GuideCard title="Обзор Action Text" href="/docs/action_text_overview">
+    Как использовать Action Text для обработки содержимого обогащённого текста.
+  </GuideCard>
+  <GuideCard title="Основы Active Job" href="/docs/active_job_basics">
+    Всё, что нужно, чтобы начать создавать, ставить в очередь и запускать фоновые задания.
+  </GuideCard>
+  <GuideCard title="Обзор Active Storage" href="/docs/active_storage_overview">
+    Как прикреплять файлы к моделям Active Record.
+  </GuideCard>
+  <GuideCard title="Обзор Action Cable" href="/docs/action_cable_overview">
+    Как работает Action Cable и как использовать WebSockets для создания функционала в реальном времени.
+  </GuideCard>
+</HomeSection>
+
+<HomeSection title="Копаем глубже">
+  <GuideCard title="API интернационализации Rails (I18n)" href="/docs/i18n">
+    Как добавить интернационализацию в ваше приложение: переводы, правила множественного числа, форматы дат.
+  </GuideCard>
+  <GuideCard title="Тестирование приложений на Rails" href="/docs/testing">
+    Полное руководство по тестированию в Rails — от «Что такое тест?» до интеграционного тестирования.
+  </GuideCard>
+  <GuideCard title="Отладка приложений на Rails" href="/docs/debugging_rails_applications">
+    Как отлаживать приложения на Rails и как понять что происходит «за кулисами».
+  </GuideCard>
+  <GuideCard title="Конфигурирование приложений на Rails" href="/docs/configuring">
+    Основные конфигурационные настройки для приложения на Rails.
+  </GuideCard>
+  <GuideCard title="Командная строка Rails" href="/docs/command_line">
+    Инструменты командной строки, предоставленные Rails.
+  </GuideCard>
+  <GuideCard title="Asset Pipeline" href="/docs/asset_pipeline">
+    Документирует конвейер ресурсов (asset pipeline).
+  </GuideCard>
+  <GuideCard title="Работа с JavaScript в Rails" href="/docs/working_with_javascript_in_rails">
+    Встроенная в Rails функциональность Ajax/JavaScript.
+  </GuideCard>
+  <GuideCard title="Процесс инициализации в Rails" href="/docs/initialization">
+    Внутренние процессы инициализации в Rails.
+  </GuideCard>
+  <GuideCard title="Автозагрузка и перезагрузка констант" href="/docs/autoloading_and_reloading_constants">
+    Как работает автозагрузка и перезагрузка констант (режим Zeitwerk).
+  </GuideCard>
+  <GuideCard title="Инструментарий Active Support" href="/docs/active_support_instrumentation">
+    Как использовать инструменты Active Support API для отслеживания событий внутри Rails или другого кода на Ruby.
+  </GuideCard>
+  <GuideCard title="Использование Rails для API-приложений" href="/docs/api_app">
+    Как эффективно использовать Rails для разработки приложения JSON API.
+  </GuideCard>
+</HomeSection>
+
+<HomeSection title="Запуск в продакшен">
+  <GuideCard title="Тюнинг производительности для развёртывания" href="/docs/tuning_performance_for_deployment">
+    Подбор настроек приложения и инфраструктуры для оптимальной работы в продакшене.
+  </GuideCard>
+  <GuideCard title="Кэширование с Rails: Обзор" href="/docs/caching_with_rails">
+    Введение в ускорение вашего приложения на Rails с помощью кэширования.
+  </GuideCard>
+  <GuideCard title="Безопасность приложений на Rails" href="/docs/security">
+    Общие проблемы безопасности в веб-приложениях и как избежать их в Rails.
+  </GuideCard>
+  <GuideCard title="Отчёт об ошибках в приложениях Rails" href="/docs/error_reporting">
+    Способы управления исключениями, которые случаются в приложениях Ruby on Rails.
+  </GuideCard>
+</HomeSection>
+
+<HomeSection title="Продвинутый Active Record">
+  <GuideCard title="Active Record для PostgreSQL" href="/docs/active_record_postgresql">
+    Специфика использования PostgreSQL с Active Record.
+  </GuideCard>
+  <GuideCard title="Несколько баз данных с Active Record" href="/docs/active_record_multiple_databases">
+    Использование нескольких баз данных в вашем приложении.
+  </GuideCard>
+  <GuideCard title="Шифрование Active Record" href="/docs/active_record_encryption">
+    Шифрование информации в базе данных с использованием Active Record.
+  </GuideCard>
+  <GuideCard title="Составные первичные ключи" href="/docs/active_record_composite_primary_keys">
+    Использование составных первичных ключей в Active Record.
+  </GuideCard>
+</HomeSection>
+
+<HomeSection title="Расширяем Rails">
+  <GuideCard title="Основы создания плагинов Rails" href="/docs/plugins">
+    Как создать плагин, расширяющий функциональность Rails.
+  </GuideCard>
+  <GuideCard title="Rails on Rack" href="/docs/rails_on_rack">
+    Интеграция Rails и Rack и взаимодействие с другими компонентами Rack.
+  </GuideCard>
+  <GuideCard title="Создание и настройка генераторов и шаблонов Rails" href="/docs/generators">
+    Процесс добавления нового генератора или представления альтернативного элемента для встроенного в Rails генератора.
+  </GuideCard>
+  <GuideCard title="Engine для начинающих" href="/docs/engines">
+    Как написать монтируемый engine.
+  </GuideCard>
+  <GuideCard title="Треды и выполнение кода в Rails" href="/docs/threading_and_code_execution">
+    Необходимые требования и инструменты при работе напрямую с конкурентностью в приложении Rails.
+  </GuideCard>
+</HomeSection>
+
+<HomeSection title="Вносим вклад в Ruby on Rails">
+  <GuideCard title="Вносим вклад в Ruby on Rails" href="/docs/contributing_to_ruby_on_rails">
+    Rails — это не «чей-то там фреймворк». Многообразие способов быть вовлечённым в продолжающуюся разработку Rails.
+  </GuideCard>
+  <GuideCard title="Рекомендации по документированию API" href="/docs/api_documentation_guidelines">
+    Рекомендации для документации Ruby on Rails.
+  </GuideCard>
+  <GuideCard title="Рекомендации для руководств по Ruby on Rails" href="/docs/ruby_on_rails_guides_guidelines">
+    Рекомендации для руководств по Ruby on Rails.
+  </GuideCard>
+  <GuideCard title="Установка зависимостей для разработки" href="/docs/development_dependencies_install">
+    Как настроить среду для разработки ядра Ruby on Rails.
+  </GuideCard>
+  <GuideCard title="Политика поддержки версий" href="/docs/maintenance_policy">
+    Какие версии Ruby on Rails поддерживаются и когда ожидать новые версии.
+  </GuideCard>
+</HomeSection>
+
+<HomeSection title="Заметки о релизах">
+  <GuideCard title="Апгрейд Ruby on Rails" href="/docs/upgrading_ruby_on_rails">
+    Как апгрейдить приложение до последних версий Ruby on Rails.
+  </GuideCard>
+  <GuideCard title="Версия 8.1 — ?" href="/docs/8_1_release_notes">
+    Заметки о релизе Rails 8.1.
+  </GuideCard>
+  <GuideCard title="Версия 8.0 — Ноябрь 2024" href="/docs/8_0_release_notes">
+    Заметки о релизе Rails 8.0.
+  </GuideCard>
+  <GuideCard title="Версия 7.2 — Август 2024" href="/docs/7_2_release_notes">
+    Заметки о релизе Rails 7.2.
+  </GuideCard>
+  <GuideCard title="Версия 7.1 — Октябрь 2023" href="/docs/7_1_release_notes">
+    Заметки о релизе Rails 7.1.
+  </GuideCard>
+  <GuideCard title="Версия 7.0 — Декабрь 2021" href="/docs/7_0_release_notes">
+    Заметки о релизе Rails 7.0.
+  </GuideCard>
+  <GuideCard title="Версия 6.1 — Декабрь 2020" href="/docs/6_1_release_notes">
+    Заметки о релизе Rails 6.1.
+  </GuideCard>
+  <GuideCard title="Версия 6.0 — Август 2019" href="/docs/6_0_release_notes">
+    Заметки о релизе Rails 6.0.
+  </GuideCard>
+  <GuideCard title="Версия 5.2 — Апрель 2018" href="/docs/5_2_release_notes">
+    Заметки о релизе Rails 5.2.
+  </GuideCard>
+  <GuideCard title="Версия 5.1 — Апрель 2017" href="/docs/5_1_release_notes">
+    Заметки о релизе Rails 5.1.
+  </GuideCard>
+  <GuideCard title="Версия 5.0 — Июнь 2016" href="/docs/5_0_release_notes">
+    Заметки о релизе Rails 5.0.
+  </GuideCard>
+  <GuideCard title="Версия 4.2 — Декабрь 2014" href="/docs/4_2_release_notes">
+    Заметки о релизе Rails 4.2.
+  </GuideCard>
+  <GuideCard title="Версия 4.1 — Апрель 2014" href="/docs/4_1_release_notes">
+    Заметки о релизе Rails 4.1.
+  </GuideCard>
+  <GuideCard title="Версия 4.0 — Июнь 2013" href="/docs/4_0_release_notes">
+    Заметки о релизе Rails 4.0.
+  </GuideCard>
+  <GuideCard title="Версия 3.2 — Январь 2012" href="/docs/3_2_release_notes">
+    Заметки о релизе Rails 3.2.
+  </GuideCard>
+  <GuideCard title="Версия 3.1 — Август 2011" href="/docs/3_1_release_notes">
+    Заметки о релизе Rails 3.1.
+  </GuideCard>
+  <GuideCard title="Версия 3.0 — Август 2010" href="/docs/3_0_release_notes">
+    Заметки о релизе Rails 3.0.
+  </GuideCard>
+</HomeSection>
+
+<HomeFooter>
+Оригинальные руководства Ruby on Rails Guides распространяются под лицензией [Creative Commons Attribution-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-sa/4.0/). «Rails», «Ruby on Rails» и логотип Rails являются торговыми марками David Heinemeier Hansson.
+
+Нашли опечатку или хотите помочь с переводом? [Отправьте пул-реквест на Гитхабе](https://github.com/rusrails/rusrails) — мы всегда рады новым контрибьюторам.
+</HomeFooter>
