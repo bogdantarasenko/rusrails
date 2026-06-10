@@ -1,0 +1,432 @@
+---
+title: Заметки о релизе Ruby on Rails 8.1
+description: "Ключевые новинки в Rails 8.1:"
+---
+
+Ключевые новинки в Rails 8.1:
+
+* Продолжения Active Job (Continuations).
+* Структурированная отчётность о событиях (Structured Event Reporting).
+* Локальный CI.
+* Рендеринг Markdown.
+* Получение учётных данных из командной строки.
+* Устаревшие связи (Deprecated Associations).
+* Развёртывания Kamal без реестра (Registry-Free).
+
+Эти заметки о релизе покрывают только основные изменения. Чтобы узнать о других обновлениях, различных исправлениях программных ошибок и изменениях, обратитесь к логам изменений или к [списку коммитов](https://github.com/rails/rails/commits/8-1-stable) в главном репозитории Rails на GitHub.
+
+--------------------------------------------------------------------------------
+
+## Апгрейд до Rails 8.1
+
+Прежде чем апгрейднуть существующее приложение, было бы хорошо иметь перед этим покрытие тестами. Также, до попытки обновиться до Rails 8.1, необходимо сначала произвести апгрейд до Rails 8.0 и убедиться, что приложение все еще выполняется так, как нужно. Список вещей, которые нужно выполнить для апгрейда доступен в руководстве [Апгрейд Ruby on Rails](/docs/upgrading-ruby-on-rails#upgrading-from-rails-8-0-to-rails-8-1).
+
+## Основные особенности
+
+### Продолжения Active Job
+
+Длительно выполняющиеся задания теперь можно разбивать на отдельные шаги, что позволяет после перезапуска продолжить выполнение с последнего завершённого шага, а не с самого начала. Это особенно полезно при развёртываниях с Kamal, который по умолчанию даёт контейнерам с выполняющимися заданиями всего тридцать секунд на завершение работы.
+
+Пример:
+
+```ruby
+class ProcessImportJob < ApplicationJob
+  include ActiveJob::Continuable
+
+  def perform(import_id)
+    @import = Import.find(import_id)
+
+    # формат блока
+    step :initialize do
+      @import.initialize
+    end
+
+    # шаг с курсором; курсор сохраняется при прерывании задания
+    step :process do |step|
+      @import.records.find_each(start: step.cursor) do |record|
+        record.process
+        step.advance! from: record.id
+      end
+    end
+
+    # формат метода
+    step :finalize
+  end
+
+  private
+    def finalize
+      @import.finalize
+    end
+end
+```
+
+### Структурированная отчётность о событиях
+
+Стандартный логгер в Rails хорош для чтения человеком, но менее удобен для последующей обработки. Новый Event Reporter предоставляет унифицированный интерфейс для создания структурированных событий в Rails-приложениях:
+
+```ruby
+Rails.event.notify("user.signup", user_id: 123, email: "user@example.com")
+```
+
+Он поддерживает добавление тегов к событиям:
+
+```ruby
+Rails.event.tagged("graphql") do
+  # Событие будет содержать теги: { graphql: true }
+  Rails.event.notify("user.signup", user_id: 123, email: "user@example.com")
+end
+```
+
+А также контекст:
+
+```ruby
+# Все события будут содержать контекст: {request_id: "abc123", shop_id: 456}
+Rails.event.set_context(request_id: "abc123", shop_id: 456)
+```
+
+События отправляются подписчикам. Приложения регистрируют подписчиков, чтобы управлять сериализацией и отправкой событий. Подписчики должны реализовывать метод `#emit`, который принимает хэш события:
+
+```ruby
+class LogSubscriber
+  def emit(event)
+    payload = event[:payload].map { |key, value| "#{key}=#{value}" }.join(" ")
+    source_location = event[:source_location]
+    log = "[#{event[:name]}] #{payload} at #{source_location[:filepath]}:#{source_location[:lineno]}"
+    Rails.logger.info(log)
+  end
+end
+```
+
+### Локальный CI
+
+Машины разработчиков стали невероятно быстрыми и обзавелись множеством ядер, что делает их отличными площадками для локального запуска даже относительно крупных тестовых наборов.
+
+Это делает отказ от облачной CI-инфраструктуры не просто возможным, но и желательным для многих небольших и средних приложений. Поэтому Rails добавил стандартный DSL для описания CI, который определяется в файле `config/ci.rb` и запускается командой `bin/ci`. Он выглядит так:
+
+```ruby
+CI.run do
+  step "Setup", "bin/setup --skip-server"
+  step "Style: Ruby", "bin/rubocop"
+
+  step "Security: Gem audit", "bin/bundler-audit"
+  step "Security: Importmap vulnerability audit", "bin/importmap audit"
+  step "Security: Brakeman code analysis", "bin/brakeman --quiet --no-pager --exit-on-warn --exit-on-error"
+  step "Tests: Rails", "bin/rails test"
+  step "Tests: Seeds", "env RAILS_ENV=test bin/rails db:seed:replant"
+
+  # Требует наличия `gh` CLI и `gh extension install basecamp/gh-signoff`.
+  if success?
+    step "Signoff: All systems go. Ready for merge and deploy.", "gh signoff"
+  else
+    failure "Signoff: CI failed. Do not merge or deploy.", "Fix the issues and try again."
+  end
+end
+```
+
+Опциональная интеграция с gh гарантирует, что PR-ы для слияния обязательно должны быть подтверждены успешным прогоном CI.
+
+### Рендеринг Markdown
+
+Markdown стал общим языком ИИ, и Rails поддержал этот тренд, упростив ответы на запросы в формате markdown и их прямой рендеринг:
+
+```ruby
+class Page
+  def to_markdown
+    body
+  end
+end
+
+class PagesController < ActionController::Base
+  def show
+    @page = Page.find(params[:id])
+
+    respond_to do |format|
+      format.html
+      format.md { render markdown: @page }
+    end
+  end
+end
+```
+
+### Получение учётных данных из командной строки
+
+Kamal теперь может легко получать свои секреты из зашифрованного хранилища Rails credentials для развёртываний. Это делает его низкоуровневой альтернативой внешним хранилищам секретов, для работы которой требуется только мастер-ключ:
+
+```bash
+# .kamal/secrets
+KAMAL_REGISTRY_PASSWORD=$(rails credentials:fetch kamal.registry_password)
+```
+
+### Устаревшие связи
+
+Связи Active Record теперь можно помечать как устаревшие:
+
+```ruby
+class Author < ApplicationRecord
+  has_many :posts, deprecated: true
+end
+```
+
+После этого использование связи `posts` будет сообщаться. Это включает явные вызовы API, такие как
+
+```ruby
+author.posts
+author.posts = ...
+```
+
+и другие, а также косвенное использование, например
+
+```ruby
+author.preload(:posts)
+```
+
+использование через nested attributes и прочее.
+
+Поддерживаются три режима оповещения (`:warn`, `:raise` и `:notify`); трассировку стека можно включить или выключить, но местоположение зарегистрированного использования вы всегда получите независимо от настроек. По умолчанию используется режим `:warn` с выключенной трассировкой стека.
+
+### Развёртывания Kamal без реестра
+
+Kamal больше не нуждается в удалённом реестре, таком как Docker Hub или GHCR, для простых развёртываний. По умолчанию Kamal 2.8 теперь использует локальный реестр для простых развёртываний. Для крупномасштабных развёртываний удалённый реестр всё ещё понадобится, но это упрощает старт и позволяет быстрее увидеть своё первое «Hello World» развёртывание в действии.
+
+## Railties
+
+За подробностями обратитесь к [Changelog][railties].
+
+### Удалено
+
+*   Удалён устаревший файл `rails/console/methods.rb`.
+
+*   Удалена устаревшая команда `bin/rake stats`.
+
+*   Удалена устаревшая константа `STATS_DIRECTORIES`.
+
+### Устарело
+
+### Значимые изменения
+
+## Action Cable
+
+За подробностями обратитесь к [Changelog][action-cable].
+
+### Удалено
+
+### Устарело
+
+### Значимые изменения
+
+## Action Pack
+
+За подробностями обратитесь к [Changelog][action-pack].
+
+### Удалено
+
+*   Удалена устаревшая поддержка пропуска ведущих скобок в именах параметров в парсере параметров.
+
+    До:
+
+    ```ruby
+    ActionDispatch::ParamBuilder.from_query_string("[foo]=bar") # => { "foo" => "bar" }
+    ActionDispatch::ParamBuilder.from_query_string("[foo][bar]=baz") # => { "foo" => { "bar" => "baz" } }
+    ```
+
+    После:
+
+    ```ruby
+    ActionDispatch::ParamBuilder.from_query_string("[foo]=bar") # => { "[foo]" => "bar" }
+    ActionDispatch::ParamBuilder.from_query_string("[foo][bar]=baz") # => { "[foo]" => { "bar" => "baz" } }
+    ```
+
+*   Удалена устаревшая поддержка использования точки с запятой в качестве разделителя строки запроса.
+
+    До:
+
+    ```ruby
+    ActionDispatch::QueryParser.each_pair("foo=bar;baz=quux").to_a
+    # => [["foo", "bar"], ["baz", "quux"]]
+    ```
+
+    После:
+
+    ```ruby
+    ActionDispatch::QueryParser.each_pair("foo=bar;baz=quux").to_a
+    # => [["foo", "bar;baz=quux"]]
+    ```
+
+*   Удалена устаревшая поддержка указания нескольких путей для одного маршрута.
+
+### Устарело
+
+*   Устарел `Rails.application.config.action_dispatch.ignore_leading_brackets`.
+
+### Значимые изменения
+
+*   Редиректы в режиме разработки теперь подробные для новых Rails-приложений. Чтобы включить их в существующем приложении, добавьте `config.action_dispatch.verbose_redirect_logs = true` в файл `config/development.rb`.
+
+## Action View
+
+За подробностями обратитесь к [Changelog][action-view].
+
+### Удалено
+
+### Устарело
+
+*  Устарели вызовы `render` с объектами `:renderable`, у которых `#render_in` отвечает без ключевых аргументов.
+
+### Значимые изменения
+
+## Action Mailer
+
+За подробностями обратитесь к [Changelog][action-mailer].
+
+### Удалено
+
+### Устарело
+
+### Значимые изменения
+
+## Active Record
+
+За подробностями обратитесь к [Changelog][active-record].
+
+### Удалено
+
+*   Удалена устаревшая опция `:retries` для адаптера SQLite3.
+
+*   Удалены устаревшие методы колонок `:unsigned_float` и `:unsigned_decimal` для MySQL.
+
+### Устарело
+
+*   Устарело использование [методов поиска, зависящих от порядка](https://github.com/rails/rails/pull/54608) (например, `#first`), без `order`.
+
+*   Устарел `ActiveRecord::Base.signed_id_verifier_secret` в пользу
+    `Rails.application.message_verifiers` (или `Model.signed_id_verifier`, если
+    секрет специфичен для модели).
+
+*   Устарело использование `insert_all`/`upsert_all` с непомещёнными в БД (unpersisted) записями в связях.
+
+*   Устарело использование `WITH`, `WITH RECURSIVE` и `DISTINCT` с
+    `update_all`.
+
+### Значимые изменения
+
+*   Столбцы таблиц внутри `schema.rb` [теперь сортируются по алфавиту.](https://github.com/rails/rails/pull/53281)
+
+## Active Storage
+
+За подробностями обратитесь к [Changelog][active-storage].
+
+### Удалено
+
+*   Удалён устаревший сервис хранилища `:azure`.
+
+### Устарело
+
+### Значимые изменения
+
+## Active Model
+
+За подробностями обратитесь к [Changelog][active-model].
+
+### Удалено
+
+### Устарело
+
+### Значимые изменения
+
+## Active Support
+
+За подробностями обратитесь к [Changelog][active-support].
+
+### Удалено
+
+*   Удалена устаревшая передача объекта Time в `Time#since`.
+
+*   Удалён устаревший метод `Benchmark.ms`. Теперь он определён в геме `benchmark`.
+
+*   Удалено устаревшее сложение экземпляров `Time` с `ActiveSupport::TimeWithZone`.
+
+*   Удалена устаревшая поддержка `to_time`, сохраняющая системное локальное время. Теперь он всегда сохраняет временную зону получателя.
+
+### Устарело
+
+*   Устарел `config.active_support.to_time_preserves_timezone`.
+
+*   Устарели `String#mb_chars` и `ActiveSupport::Multibyte::Chars`.
+
+*   Устарел `ActiveSupport::Configurable`.
+
+### Значимые изменения
+
+## Active Job
+
+За подробностями обратитесь к [Changelog][active-job].
+
+### Удалено
+
+*   Удалена поддержка установки `ActiveJob::Base.enqueue_after_transaction_commit` в значения `:never`, `:always` и `:default`.
+
+*   Удалён устаревший `Rails.application.config.active_job.enqueue_after_transaction_commit`.
+
+*   Удалён устаревший внутренний адаптер `SuckerPunch` в пользу адаптера, включённого в гем `sucker_punch`.
+
+### Устарело
+
+*   Пользовательские сериализаторы Active Job должны иметь публичный метод `#klass`.
+
+*   Устарел встроенный адаптер `sidekiq` (теперь предоставляется гемом `sidekiq`).
+
+### Значимые изменения
+
+## Action Text
+
+За подробностями обратитесь к [Changelog][action-text].
+
+### Удалено
+
+### Устарело
+
+* Устарел класс `ActionText::TrixAttachment`.
+
+* Устарел модуль `ActionText::Attachments::TrixConversion`.
+
+* Устарел `ActionText::Attachable#to_trix_content_attachment_partial_path`. Переопределяйте `to_editor_content_attachment_partial_path` вместо него.
+
+* Устарел `ActionText::RichText#to_trix_html`.
+
+* Устарел `ActionText::Content#to_trix_html`.
+
+### Значимые изменения
+
+## Action Mailbox
+
+За подробностями обратитесь к [Changelog][action-mailbox].
+
+### Удалено
+
+### Устарело
+
+### Значимые изменения
+
+## Ruby on Rails Guides
+
+За подробностями обратитесь к [Changelog][guides].
+
+### Значимые изменения
+
+## Credits
+
+Взгляните [на полный список контрибьюторов Rails](https://contributors.rubyonrails.org/), на людей, которые потратили много часов, сделав Rails стабильнее и надёжнее. Спасибо им всем.
+
+[railties]:       https://github.com/rails/rails/blob/8-1-stable/railties/CHANGELOG.md
+[action-pack]:    https://github.com/rails/rails/blob/8-1-stable/actionpack/CHANGELOG.md
+[action-view]:    https://github.com/rails/rails/blob/8-1-stable/actionview/CHANGELOG.md
+[action-mailer]:  https://github.com/rails/rails/blob/8-1-stable/actionmailer/CHANGELOG.md
+[action-cable]:   https://github.com/rails/rails/blob/8-1-stable/actioncable/CHANGELOG.md
+[active-record]:  https://github.com/rails/rails/blob/8-1-stable/activerecord/CHANGELOG.md
+[active-storage]: https://github.com/rails/rails/blob/8-1-stable/activestorage/CHANGELOG.md
+[active-model]:   https://github.com/rails/rails/blob/8-1-stable/activemodel/CHANGELOG.md
+[active-support]: https://github.com/rails/rails/blob/8-1-stable/activesupport/CHANGELOG.md
+[active-job]:     https://github.com/rails/rails/blob/8-1-stable/activejob/CHANGELOG.md
+[action-text]:    https://github.com/rails/rails/blob/8-1-stable/actiontext/CHANGELOG.md
+[action-mailbox]: https://github.com/rails/rails/blob/8-1-stable/actionmailbox/CHANGELOG.md
+[guides]:         https://github.com/rails/rails/blob/8-1-stable/guides/CHANGELOG.md
