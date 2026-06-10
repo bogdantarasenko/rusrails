@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "check:parity": "node scripts/check-structure-parity.mjs",
+    "check:links": "node scripts/check-links.mjs",
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
