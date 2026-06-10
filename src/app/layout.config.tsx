@@ -6,7 +6,6 @@ export const baseOptions: BaseLayoutProps = {
     title: (
       <span className="flex items-center gap-2">
         <Logo />
-        <span className="font-semibold">по-русски</span>
       </span>
     ),
   },
