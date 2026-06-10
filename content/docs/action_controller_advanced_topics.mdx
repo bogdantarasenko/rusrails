@@ -16,7 +16,7 @@ description: "В этом руководстве рассматриваются 
 
 ## Введение
 
-Это руководство охватывает ряд продвинутых тем, связанных с контроллерами в Rails-приложении. Введение в Action Controller смотрите в руководстве [Обзор Action Controller](/docs/action-controller-overview).
+Это руководство охватывает ряд продвинутых тем, связанных с контроллерами в Rails-приложении. Введение в Action Controller смотрите в руководстве [Обзор Action Controller](/docs/action_controller_overview).
 
 ## Токен подлинности и защита от подделки запросов
 
@@ -62,7 +62,7 @@ CSRF-токен с именем `authenticity_token` автоматически 
 </form>
 ```
 
-Rails добавляет этот токен в каждую `form`, сгенерированную с помощью [хелперов форм](/docs/form-helpers), поэтому в большинстве случаев вам не нужно ничего делать. Если вы пишете форму вручную или вам нужно добавить токен по другой причине, он доступен через метод [`form_authenticity_token`](https://api.rubyonrails.org/classes/ActionController/RequestForgeryProtection.html#method-i-form_authenticity_token).
+Rails добавляет этот токен в каждую `form`, сгенерированную с помощью [хелперов форм](/docs/form_helpers), поэтому в большинстве случаев вам не нужно ничего делать. Если вы пишете форму вручную или вам нужно добавить токен по другой причине, он доступен через метод [`form_authenticity_token`](https://api.rubyonrails.org/classes/ActionController/RequestForgeryProtection.html#method-i-form_authenticity_token).
 
 ```html
 <!-- app/views/layouts/application.html.erb -->

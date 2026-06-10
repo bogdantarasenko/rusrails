@@ -1305,7 +1305,7 @@ SELECT authors.* FROM authors INNER JOIN books ON books.author_id = authors.id A
 
 #### Использование массива/хэша именованных связей
 
-Active Record позволяет использовать имена [связей](/docs/active-record-associations), определенных в модели, как ярлыки для определения условия `JOIN` этих связей при использовании метода `joins`.
+Active Record позволяет использовать имена [связей](/docs/association_basics), определенных в модели, как ярлыки для определения условия `JOIN` этих связей при использовании метода `joins`.
 
 Все нижеследующее создаст ожидаемые соединительные запросы с использованием `INNER JOIN`:
 
@@ -1377,7 +1377,7 @@ INNER JOIN suppliers ON suppliers.id = books.supplier_id
 
 #### Определение условий в соединительных таблицах
 
-В соединительных таблицах можно определить условия, используя обычные [массивные](/docs/active-record-querying#array-conditions) и [строковые](/docs/active-record-querying#pure-string-conditions) условия. [Условия с использованием хэша](/docs/active-record-querying#hash-conditions) предоставляют специальный синтаксис для определения условий в соединительных таблицах:
+В соединительных таблицах можно определить условия, используя обычные [массивные](/docs/active_record_querying#array-conditions) и [строковые](/docs/active_record_querying#pure-string-conditions) условия. [Условия с использованием хэша](/docs/active_record_querying#hash-conditions) предоставляют специальный синтаксис для определения условий в соединительных таблицах:
 
 ```ruby
 time_range = (Time.now.midnight - 1.day)..Time.now.midnight

@@ -207,7 +207,7 @@ resolve('Geocoder') { [:geocoder] }
 * `geocoder_path` возвращает `/geocoder`
 
 <Callout type="info">
-Вызов `resolve` необходим для преобразования экземпляров `Geocoder` в маршруты через [идентификацию записи](/docs/form-helpers#relying-on-record-identification).
+Вызов `resolve` необходим для преобразования экземпляров `Geocoder` в маршруты через [идентификацию записи](/docs/form_helpers#relying-on-record-identification).
 </Callout>
 
 Как и в случае с множественными ресурсами, те же хелперы, оканчивающиеся на `_url` также включают хост, порт и префикс пути.
@@ -781,7 +781,7 @@ get '/:username', to: 'users#show'
 
 ### Ограничения, основанные на запросе
 
-Также можно ограничить маршрут, основываясь на любом методе в [объекте Request](/docs/action-controller-overview#the-request-and-response-objects), который возвращает `String`.
+Также можно ограничить маршрут, основываясь на любом методе в [объекте Request](/docs/action_controller_overview#the-request-and-response-objects), который возвращает `String`.
 
 Ограничение, основанное на запросе, определяется так же, как и сегментное ограничение:
 
@@ -800,7 +800,7 @@ end
 ```
 
 <Callout type="info">
-Ограничения запроса работают, вызывая метод на [объекте Request](/docs/action-controller-overview#the-request-and-response-objects) с тем же именем, что и ключ хэша, а затем сравнивают возвращенное значение со значением хэша. Следовательно, значения ограничений должны соответствовать возвращаемому типу соответствующего метода объекта Request. Например: `constraints: { subdomain: 'api' }` будет соответствовать поддомену `api`, как и ожидалось, однако, использование символа `constraints: { subdomain: :api }` не будет, так как `request.subdomain` возвращает `'api'` как строку.
+Ограничения запроса работают, вызывая метод на [объекте Request](/docs/action_controller_overview#the-request-and-response-objects) с тем же именем, что и ключ хэша, а затем сравнивают возвращенное значение со значением хэша. Следовательно, значения ограничений должны соответствовать возвращаемому типу соответствующего метода объекта Request. Например: `constraints: { subdomain: 'api' }` будет соответствовать поддомену `api`, как и ожидалось, однако, использование символа `constraints: { subdomain: :api }` не будет, так как `request.subdomain` возвращает `'api'` как строку.
 </Callout>
 
 <Callout type="info">
@@ -944,7 +944,7 @@ get '/stories/:name', to: redirect('/articles/%{name}', status: 302)
 
 ### Роутинг к приложениям Rack
 
-Вместо строки, подобной `'articles#index'`, соответствующей экшну `index` в `ArticlesController`, можно определить любое [приложение Rack](/docs/rails-on-rack) как конечную точку совпадения.
+Вместо строки, подобной `'articles#index'`, соответствующей экшну `index` в `ArticlesController`, можно определить любое [приложение Rack](/docs/rails_on_rack) как конечную точку совпадения.
 
 ```ruby
 match '/application.js', to: MyRackApp, via: :all

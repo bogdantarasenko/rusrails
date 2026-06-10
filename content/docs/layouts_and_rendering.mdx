@@ -857,9 +857,9 @@ Cache-Control: no-cache
 
 Хелпер [`javascript_include_tag`][] возвращает HTML-тег `script` для каждого предоставленного источника.
 
-При использовании Rails с включенным [Asset Pipeline](/docs/asset-pipeline), этот хелпер сгенерирует ссылку на `/assets/javascripts/`, а не на `public/javascripts`, которая использовалась в более ранних версиях Rails. Затем эта ссылка обслуживается конвейером ресурсов (asset pipeline).
+При использовании Rails с включенным [Asset Pipeline](/docs/asset_pipeline), этот хелпер сгенерирует ссылку на `/assets/javascripts/`, а не на `public/javascripts`, которая использовалась в более ранних версиях Rails. Затем эта ссылка обслуживается конвейером ресурсов (asset pipeline).
 
-Файл JavaScript в приложении Rails или Rails Engine размещается в одном из трех мест расположения: `app/assets`, `lib/assets` или `vendor/assets`. Эти места расположения детально описаны в разделе про [организацию ресурсов](/docs/asset-pipeline#how-to-use-the-asset-pipeline) в руководстве по Asset Pipeline.
+Файл JavaScript в приложении Rails или Rails Engine размещается в одном из трех мест расположения: `app/assets`, `lib/assets` или `vendor/assets`. Эти места расположения детально описаны в разделе про [организацию ресурсов](/docs/asset_pipeline#how-to-use-the-asset-pipeline) в руководстве по Asset Pipeline.
 
 Можно определить полный путь относительно корня документа или URL, по желанию. Например, сослаться на файл JavaScript, находящийся в директории с именем `javascripts` в одной из `app/assets`, `lib/assets` или `vendor/assets`, можно так:
 

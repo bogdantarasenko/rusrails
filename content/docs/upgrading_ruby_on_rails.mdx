@@ -162,7 +162,7 @@ Rails.autoloaders.main.do_not_eager_load(config.root.join("lib"))
 config.cache_store = :mem_cache_store, "cache.example.com", { pool: false }
 ```
 
-Подробности смотрите в руководстве [по кэшированию с Rails](/docs/caching-with-rails#connection-pool-options).
+Подробности смотрите в руководстве [по кэшированию с Rails](/docs/caching_with_rails#connection-pool-options).
 
 ### `SQLite3Adapter` теперь конфигурируется, чтобы использоваться в режиме строгих строк
 
@@ -401,7 +401,7 @@ to be an error condition in future versions of Rails.
 ...
 ```
 
-Если вы все еще получаете это предупреждение в логах, обратитесь к разделу об автоматической загрузки при запуске приложения в [руководстве по автозагрузке](/docs/autoloading-and-reloading-constants#autoloading-when-the-application-boots). В противном случае вы получите `NameError` в Rails 7.
+Если вы все еще получаете это предупреждение в логах, обратитесь к разделу об автоматической загрузки при запуске приложения в [руководстве по автозагрузке](/docs/autoloading_and_reloading_constants#autoloading-when-the-application-boots). В противном случае вы получите `NameError` в Rails 7.
 
 Константы, управляемые автозагрузчиком `once` могут быть автоматически загружены в течение инициализации, и их можно использовать нормально, блок `to_prepare` не нужен. Однако, для поддержки этого автозагрузчик `once` теперь настраивается раньше. Если в приложении имеются пользовательское словообразование, и автозагрузчик `once` должен быть в курсе о нем, необходимо перенести код из `config/initializers/inflections.rb` в тело определения класса приложения в `config/application.rb`:
 
@@ -947,7 +947,7 @@ All is good!
 
 Все известные случаи применений `require_dependency` были устранены, следует найти и удалить их во всем проекте.
 
-Если в вашем приложении есть Single Table Inheritance, посмотрите на [раздел о наследовании с единой таблицей](/docs/autoloading-and-reloading-constants#single-table-inheritance) руководства Автозагрузка и перезагрузка констант (режим Zeitwerk).
+Если в вашем приложении есть Single Table Inheritance, посмотрите на [раздел о наследовании с единой таблицей](/docs/autoloading_and_reloading_constants#single-table-inheritance) руководства Автозагрузка и перезагрузка констант (режим Zeitwerk).
 
 #### Ограниченные имена в определениях класса и модуля
 
@@ -2369,7 +2369,7 @@ Rails 4.0 убрал псевдоним `j` для `ERB::Util#json_escape`, та
 
 #### Cache
 
-Метод кэширования изменился между Rails 3.x и 4.0. Вы должны [изменить пространство имен](/docs/caching-with-rails#activesupport-cache-store) и развертывать с холодным кэшем.
+Метод кэширования изменился между Rails 3.x и 4.0. Вы должны [изменить пространство имен](/docs/caching_with_rails#activesupport-cache-store) и развертывать с холодным кэшем.
 
 ### Порядок загрузки хелперов
 
@@ -2500,7 +2500,7 @@ config.assets.debug = true
 
 ### config/environments/production.rb
 
-Снова, большая часть изменений относится к конвейеру ресурсов. Подробнее о них можно прочитать в руководстве [Asset Pipeline](/docs/asset-pipeline).
+Снова, большая часть изменений относится к конвейеру ресурсов. Подробнее о них можно прочитать в руководстве [Asset Pipeline](/docs/asset_pipeline).
 
 ```ruby
 # Compress JavaScripts and CSS

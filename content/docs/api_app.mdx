@@ -145,7 +145,7 @@ API-приложение поставляется со следующими пр
 - `Rack::ConditionalGet`
 - `Rack::ETag`
 
-Смотрите раздел по [внутренним промежуточным программам](/docs/rails-on-rack#internal-middleware-stack) руководства по Rack, чтобы узнать подробности о них.
+Смотрите раздел по [внутренним промежуточным программам](/docs/rails_on_rack#internal-middleware-stack) руководства по Rack, чтобы узнать подробности о них.
 
 Другие плагины, включая Active Record, могут добавлять дополнительные промежуточные программы. В основном, эти промежуточные программы безразличны к типу создаваемого приложения, и имеют смысл в API-приложении Rails.
 
@@ -297,7 +297,7 @@ API-приложение (использующее `ActionController::API`) по
 - `ActionController::DataStreaming`: Поддержка для `send_file` и `send_data`.
 - `AbstractController::Callbacks`: Поддержка для `before_action` и подобных хелперов.
 - `ActionController::Rescue`: Поддержка для `rescue_from`.
-- `ActionController::Instrumentation`: Поддержка для инструментальных хуков, определенных Action Controller (подробности относительно этого смотрите в руководстве [Инструментарий Active Support](/docs/active-support-instrumentation#action-controller)).
+- `ActionController::Instrumentation`: Поддержка для инструментальных хуков, определенных Action Controller (подробности относительно этого смотрите в руководстве [Инструментарий Active Support](/docs/active_support_instrumentation#action-controller)).
 - `ActionController::ParamsWrapper`: Оборачивает хэш параметров во вложенный хэш, таким образом, к примеру, не нужно указывать корневые элементы при посылка запросов POST.
 - `ActionController::Head`: Поддержка возврата отклика без тела сообщения, только заголовки.
 

@@ -18,7 +18,7 @@ description: "Ключевые новинки в Rails 4.1:"
 
 Прежде чем апгрейднуть существующее приложение, было бы хорошо иметь перед этим покрытие тестами. Также, до попытки обновиться до Rails 4.1, необходимо сначала произвести апгрейд до Rails 4.0 и убедиться, что приложение все еще выполняется так, как нужно.
 Список вещей, которые нужно выполнить для апгрейда доступен в руководстве
-[Апгрейд Ruby on Rails](/docs/upgrading-ruby-on-rails#upgrading-from-rails-4-0-to-rails-4-1).
+[Апгрейд Ruby on Rails](/docs/upgrading_ruby_on_rails#upgrading-from-rails-4-0-to-rails-4-1).
 
 ## Основные особенности
 
@@ -55,7 +55,7 @@ Spring is running:
 Обратитесь к [Spring README](https://github.com/jonleighton/spring/blob/master/README.md),
 чтобы увидеть все возможности.
 
-Обратитесь к руководству [Апгрейд Ruby on Rails](/docs/upgrading-ruby-on-rails#spring)
+Обратитесь к руководству [Апгрейд Ruby on Rails](/docs/upgrading_ruby_on_rails#spring)
 - как мигрировать существующее приложение, чтобы использовать данную возможность.
 
 ### `config/secrets.yml`
@@ -75,7 +75,7 @@ development:
 
 `Rails.application.secrets.some_api_key` вернёт `SOMEKEY` в development окружении.
 
-Обратитесь к руководству [Апгрейд Ruby on Rails](/docs/upgrading-ruby-on-rails#config-secrets-yml)
+Обратитесь к руководству [Апгрейд Ruby on Rails](/docs/upgrading_ruby_on_rails#config-secrets-yml)
 - как мигрировать существующее приложение, чтобы использовать данную возможность.
 
 ### Action Pack Variants
@@ -307,10 +307,10 @@ end
 
 * Новая конфигурационная опция `config.action_dispatch.perform_deep_munge` для включения "deep munging" параметров, использующегося в связи с уязвимостью безопасности CVE-2013-0155. ([Pull Request](https://github.com/rails/rails/pull/13188))
 
-* Новая конфигурационная опция `config.action_dispatch.cookies_serializer` для определения сериализатора для подписанных и зашифрованных куки. (Pull Requests [1](https://github.com/rails/rails/pull/13692), [2](https://github.com/rails/rails/pull/13945) / [Подробнее](/docs/upgrading-ruby-on-rails#cookies-serializer))
+* Новая конфигурационная опция `config.action_dispatch.cookies_serializer` для определения сериализатора для подписанных и зашифрованных куки. (Pull Requests [1](https://github.com/rails/rails/pull/13692), [2](https://github.com/rails/rails/pull/13945) / [Подробнее](/docs/upgrading_ruby_on_rails#cookies-serializer))
 
 * Добавлены `render :plain`, `render :html` и `render :body`. ([Pull Request](https://github.com/rails/rails/pull/14062) /
-  [Подробнее](/docs/upgrading-ruby-on-rails#rendering-content-from-string))
+  [Подробнее](/docs/upgrading_ruby_on_rails#rendering-content-from-string))
 
 ## Action Mailer
 
@@ -406,7 +406,7 @@ end
 
 * Скоупы по умолчанию больше не переопределяются присоединенными условиями.
 
-  До этого изменения, при определении в модели `default_scope`, он переопределялся присоединенными условиями на то же поле. Теперь он объединяется, как и любой другой скоуп. [Подробнее](/docs/upgrading-ruby-on-rails#changes-on-default-scopes).
+  До этого изменения, при определении в модели `default_scope`, он переопределялся присоединенными условиями на то же поле. Теперь он объединяется, как и любой другой скоуп. [Подробнее](/docs/upgrading_ruby_on_rails#changes-on-default-scopes).
 
 * Добавлен метод `ActiveRecord::Base.to_param` для удобного создания "красивых" URL, используя
   атрибуты или методы модели.
@@ -508,11 +508,11 @@ end
 ### Удалено
 
 * Удалена зависимость `MultiJSON`. Теперь, `ActiveSupport::JSON.decode`
-  больше не принимает хэш опций для `MultiJSON`. ([Pull Request](https://github.com/rails/rails/pull/10576) / [Подробнее](/docs/upgrading-ruby-on-rails#changes-in-json-handling))
+  больше не принимает хэш опций для `MultiJSON`. ([Pull Request](https://github.com/rails/rails/pull/10576) / [Подробнее](/docs/upgrading_ruby_on_rails#changes-in-json-handling))
 
 * Удалена поддержка для хука `encode_json`, используемого для преобразования произвольных объектов в JSON. Данная функциональность извлечена в гем [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder).
   ([Связанный Pull Request](https://github.com/rails/rails/pull/12183) /
-  [Подробнее](/docs/upgrading-ruby-on-rails#changes-in-json-handling))
+  [Подробнее](/docs/upgrading_ruby_on_rails#changes-in-json-handling))
 
 * Удалено без замены `ActiveSupport::JSON::Variable`.
 
@@ -560,12 +560,12 @@ end
 * Устарело `ActiveSupport::JSON::Encoding::CircularReferenceError`. Данная функциональность
   была выделена в гем [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder).
   ([Pull Request](https://github.com/rails/rails/pull/12785) /
-  [Подробности](/docs/upgrading-ruby-on-rails#changes-in-json-handling))
+  [Подробности](/docs/upgrading_ruby_on_rails#changes-in-json-handling))
 
 * Устарела опция `ActiveSupport.encode_big_decimal_as_string`. Данная функциональность
   была выделена в гем [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder).
   ([Pull Request](https://github.com/rails/rails/pull/13060) /
-  [Подробности](/docs/upgrading-ruby-on-rails#changes-in-json-handling))
+  [Подробности](/docs/upgrading_ruby_on_rails#changes-in-json-handling))
 
 * Устарела произвольная сериализация `BigDecimal`. ([Pull Request](https://github.com/rails/rails/pull/13911))
 
@@ -574,11 +574,11 @@ end
 * JSON encoder из `ActiveSupport` был переписан, для того, чтобы воспользоваться
   гемом JSON, а не создавать свой велосипед.
   ([Pull Request](https://github.com/rails/rails/pull/12183) /
-  [Подробности](/docs/upgrading-ruby-on-rails#changes-in-json-handling))
+  [Подробности](/docs/upgrading_ruby_on_rails#changes-in-json-handling))
 
 * Улучшена совместимость с гемом JSON.
   ([Pull Request](https://github.com/rails/rails/pull/12862) /
-  [Подробности](/docs/upgrading-ruby-on-rails#changes-in-json-handling))
+  [Подробности](/docs/upgrading_ruby_on_rails#changes-in-json-handling))
 
 * Добавлены методы `ActiveSupport::Testing::TimeHelpers#travel` и `#travel_to`. Которые
   изменяют текущее время на заданное время или продолжительность, который вы укажите, с помощью стаба `Time.now` и

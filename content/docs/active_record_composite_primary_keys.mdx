@@ -131,7 +131,7 @@ Order.where(id: 5)
 
 Будьте осторожны при использовании `find_by(id:)` на моделях, где `:id` не является первичным ключом, например на моделях с составным первичным ключом. Подробности смотрите в руководстве [Интерфейс запросов Active Record][Active Record Querying].
 
-[Active Record Querying]: /docs/active-record-querying#conditions-with-id
+[Active Record Querying]: /docs/active_record_querying#conditions-with-id
 
 Ассоциации между моделями с составными первичными ключами
 ---------------------------------------------------------
@@ -213,7 +213,7 @@ SELECT * FROM authors WHERE first_name = 'Jane' AND last_name = 'Doe'
 
 Формы также можно строить для моделей с составными первичными ключами. Подробнее о синтаксисе построителя форм смотрите в руководстве [Хелперы форм][Form Helpers].
 
-[Form Helpers]: /docs/form-helpers
+[Form Helpers]: /docs/form_helpers
 
 Предположим, у нас есть объект модели `@book` с составным ключом `[:author_id, :id]`:
 

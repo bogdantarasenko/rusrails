@@ -15,7 +15,7 @@ description: Это руководство познакомит вас со вс
 
 ## Что такое Active Model?
 
-Чтобы понять Active Model, вам нужно немного знать об [Active Record](/docs/active-record-basics). Active Record - это ORM (Object Relational Mapper), который соединяет объекты, данные которых требуют постоянного хранения, с реляционной базой данных. Однако он обладает функциональностью, которая полезна вне ORM, например, валидация, колбэки, переводы, возможность создавать пользовательские атрибуты и т.д.
+Чтобы понять Active Model, вам нужно немного знать об [Active Record](/docs/active_record_basics). Active Record - это ORM (Object Relational Mapper), который соединяет объекты, данные которых требуют постоянного хранения, с реляционной базой данных. Однако он обладает функциональностью, которая полезна вне ORM, например, валидация, колбэки, переводы, возможность создавать пользовательские атрибуты и т.д.
 
 Некоторые из этих функций были абстрагированы из Active Record для формирования Active Model. Active Model - это библиотека, содержащая различные модули, которые можно использовать для обычных объектов Ruby, которым требуются функции, похожие на модели, но которые не привязаны к какой-либо таблице в базе данных.
 
@@ -25,7 +25,7 @@ description: Это руководство познакомит вас со вс
 
 ### API
 
-[`ActiveModel::API`](https://api.rubyonrails.org/classes/ActiveModel/API.html) добавляет возможность классу работать с [Action Pack](https://api.rubyonrails.org/files/actionpack/README_rdoc.html) и [Action View](/docs/action-view-overview) прямо из коробки.
+[`ActiveModel::API`](https://api.rubyonrails.org/classes/ActiveModel/API.html) добавляет возможность классу работать с [Action Pack](https://api.rubyonrails.org/files/actionpack/README_rdoc.html) и [Action View](/docs/action_view_overview) прямо из коробки.
 
 При включении `ActiveModel::API`, по умолчанию включаются другие модули, добавляющие особенности, такие как:
 
@@ -97,7 +97,7 @@ irb> empty_contact.valid?
 ```
 
 <Callout type="info">
-Дополнительную информацию об использовании `form_with` и `render` с объектами, совместимыми с `ActiveModel::API`, можно найти в руководствах [по хелперам форм](/docs/form-helpers) и [по макетам и рендерингу](layouts-and-rendering) соответственно.
+Дополнительную информацию об использовании `form_with` и `render` с объектами, совместимыми с `ActiveModel::API`, можно найти в руководствах [по хелперам форм](/docs/form_helpers) и [по макетам и рендерингу](layouts-and-rendering) соответственно.
 </Callout>
 
 ### Модель
@@ -368,7 +368,7 @@ irb> person.full_name_short?
 
 ### Колбэки
 
-[`ActiveModel::Callbacks`](https://api.rubyonrails.org/classes/ActiveModel/Callbacks.html) предоставляет обычным объектам Ruby возможность использовать [колбэки в стиле Active Record](/docs/active-record-callbacks). Колбэки позволяют вам подключаться к событиям жизненного цикла модели, таким как `before_update` и `after_create`, а также определять собственную логику, которая будет выполняться в определенные моменты жизненного цикла модели.
+[`ActiveModel::Callbacks`](https://api.rubyonrails.org/classes/ActiveModel/Callbacks.html) предоставляет обычным объектам Ruby возможность использовать [колбэки в стиле Active Record](/docs/active_record_callbacks). Колбэки позволяют вам подключаться к событиям жизненного цикла модели, таким как `before_update` и `after_create`, а также определять собственную логику, которая будет выполняться в определенные моменты жизненного цикла модели.
 
 Вы можете реализовать `ActiveModel::Callbacks`, выполнив следующие действия:
 

@@ -424,7 +424,7 @@ ActiveJob.perform_all_later(cleanup_job, export_job, notify_job)
 
 При массовой постановке задач в очередь с помощью `perform_all_later` колбэки, такие как `around_enqueue`, не будут вызываться для отдельных задач. Это поведение согласуется с другими методами массовых операций Active Record. Поскольку колбэки выполняются для отдельных задач, они не могут использовать преимущества массового характера этого метода.
 
-Однако метод `perform_all_later` вызывает событие [`enqueue_all.active_job`](/docs/active-support-instrumentation#enqueue-all-active-job), на которое вы можете подписаться с помощью `ActiveSupport::Notifications`.
+Однако метод `perform_all_later` вызывает событие [`enqueue_all.active_job`](/docs/active_support_instrumentation#enqueue-all-active-job), на которое вы можете подписаться с помощью `ActiveSupport::Notifications`.
 
 Метод [`successfully_enqueued?`](https://api.rubyonrails.org/classes/ActiveJob/Core.html#method-i-successfully_enqueued-3F) можно использовать, чтобы узнать, была ли определенная задача успешно поставлена в очередь.
 
@@ -610,6 +610,6 @@ GlobalID позволяет сериализовать полностью объ
 
 ## Отладка
 
-Если вам нужна помощь в том, чтобы понять, откуда берутся задания, вы можете включить [подробное логирование](/docs/debugging-rails-applications#verbose-enqueue-logs).
+Если вам нужна помощь в том, чтобы понять, откуда берутся задания, вы можете включить [подробное логирование](/docs/debugging_rails_applications#verbose-enqueue-logs).
 
 If you need help figuring out where jobs are coming from, you can enable [verbose logging](debugging_rails_applications.html#verbose-enqueue-logs).

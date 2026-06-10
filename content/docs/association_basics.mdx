@@ -709,7 +709,7 @@ end
 
 Если необходимо [принудительно использовать ссылочную целостность на уровне базы данных][foreign_keys], добавьте опцию `foreign_key: true` в вышеприведенное объявление 'reference' столбца.
 
-[foreign_keys]: /docs/active-record-migrations#foreign-keys
+[foreign_keys]: /docs/active_record_migrations#foreign-keys
 #### Создание соединительных таблиц для связей `has_and_belongs_to_many`
 
 Если вы создали связь `has_and_belongs_to_many`, необходимо обязательно создать соединительную таблицу. Если имя соединительной таблицы явно не указано с использованием опции `:join_table`, Active Record создает имя, используя алфавитный порядок имен классов. Поэтому соединение между моделями author и book по умолчанию даст значение имени таблицы "authors_books", так как "a" идет перед "b" в алфавитном порядке.
@@ -867,7 +867,7 @@ Active Record попытается автоматически определит
     => true
     ```
 
-* Проверяет [наличие](/docs/active-record-validations#presence) и [отсутствие](/docs/active-record-validations#absence) связей в большинстве случаев:
+* Проверяет [наличие](/docs/active_record_validations#presence) и [отсутствие](/docs/active_record_validations#absence) связей в большинстве случаев:
 
     ```ruby
     irb> book = Book.new
@@ -1302,7 +1302,7 @@ class Book < ApplicationRecord
 end
 ```
 
-Внутри блока скоупа можно использовать любые стандартные [методы запросов](/docs/active-record-querying). Далее обсудим следующие из них:
+Внутри блока скоупа можно использовать любые стандартные [методы запросов](/docs/active_record_querying). Далее обсудим следующие из них:
 
 * `where`
 * `includes`
@@ -1648,7 +1648,7 @@ class Supplier < ApplicationRecord
 end
 ```
 
-Внутри блока скоупа можно использовать любые стандартные [методы запросов](/docs/active-record-querying). Далее обсудим следующие из них:
+Внутри блока скоупа можно использовать любые стандартные [методы запросов](/docs/active_record_querying). Далее обсудим следующие из них:
 
 * `where`
 * `includes`
@@ -2116,7 +2116,7 @@ class Author < ApplicationRecord
 end
 ```
 
-Внутри блока скоупа можно использовать любые стандартные [методы запросов](/docs/active-record-querying). Далее обсудим следующие из них:
+Внутри блока скоупа можно использовать любые стандартные [методы запросов](/docs/active_record_querying). Далее обсудим следующие из них:
 
 * `where`
 * `extending`
@@ -2591,7 +2591,7 @@ class Parts < ApplicationRecord
 end
 ```
 
-Внутри блока скоупа можно использовать любые стандартные [методы запросов](/docs/active-record-querying). Далее обсудим следующие из них:
+Внутри блока скоупа можно использовать любые стандартные [методы запросов](/docs/active_record_querying). Далее обсудим следующие из них:
 
 * `where`
 * `extending`
@@ -2717,7 +2717,7 @@ class Author < ApplicationRecord
 end
 ```
 
-Подробнее о колбэках связи читайте в [Руководстве о колбэках Active Record](/active-record-callbacks.html#association-callbacks)
+Подробнее о колбэках связи читайте в [Руководстве о колбэках Active Record](/docs/active_record_callbacks.html#association-callbacks)
 
 ### Расширения связи
 

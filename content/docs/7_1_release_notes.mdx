@@ -26,7 +26,7 @@ description: "Ключевые новинки в Rails 7.1:"
 
 ## Апгрейд до Rails 7.1
 
-Прежде чем апгрейднуть существующее приложение, было бы хорошо иметь перед этим покрытие тестами. Также, до попытки обновиться до Rails 7.1, необходимо сначала произвести апгрейд до Rails 7.0 и убедиться, что приложение все еще выполняется так, как нужно. Список вещей, которые нужно выполнить для апгрейда доступен в руководстве [Апгрейд Ruby on Rails](/docs/upgrading-ruby-on-rails#upgrading-from-rails-7-0-to-rails-7-1).
+Прежде чем апгрейднуть существующее приложение, было бы хорошо иметь перед этим покрытие тестами. Также, до попытки обновиться до Rails 7.1, необходимо сначала произвести апгрейд до Rails 7.0 и убедиться, что приложение все еще выполняется так, как нужно. Список вещей, которые нужно выполнить для апгрейда доступен в руководстве [Апгрейд Ruby on Rails](/docs/upgrading_ruby_on_rails#upgrading-from-rails-7-0-to-rails-7-1).
 
 ## Основные особенности
 
@@ -200,7 +200,7 @@ ActiveSupport::MessageVerifier.new(secret, serializer: :message_pack)
 config.action_dispatch.cookies_serializer = :message_pack
 ```
 
-И в качестве [сериализатора кэша](/docs/caching-with-rails#configuration):
+И в качестве [сериализатора кэша](/docs/caching_with_rails#configuration):
 
 ```ruby
 config.cache_store = :file_store, "tmp/cache", { serializer: :message_pack }
